@@ -3,7 +3,7 @@ package pl.sii.shopsystem.purchase.persistence;
 import jakarta.persistence.*;
 import lombok.*;
 import pl.sii.shopsystem.client.persistence.Client;
-import pl.sii.shopsystem.client.persistence.PurchaseProduct;
+import pl.sii.shopsystem.purchase.purchaseProduct.persistence.PurchaseProduct;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;

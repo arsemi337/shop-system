@@ -1,4 +1,4 @@
-package pl.sii.shopsystem.client.persistence;
+package pl.sii.shopsystem.purchase.purchaseProduct.persistence;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;

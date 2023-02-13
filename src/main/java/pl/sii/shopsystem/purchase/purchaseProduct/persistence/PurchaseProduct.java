@@ -1,7 +1,8 @@
-package pl.sii.shopsystem.client.persistence;
+package pl.sii.shopsystem.purchase.purchaseProduct.persistence;
 
 import jakarta.persistence.*;
 import lombok.*;
+import pl.sii.shopsystem.product.persistence.Product;
 import pl.sii.shopsystem.purchase.persistence.Purchase;
 
 @Entity

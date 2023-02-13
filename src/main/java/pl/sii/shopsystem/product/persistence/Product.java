@@ -1,7 +1,8 @@
-package pl.sii.shopsystem.client.persistence;
+package pl.sii.shopsystem.product.persistence;
 
 import jakarta.persistence.*;
 import lombok.*;
+import pl.sii.shopsystem.purchase.purchaseProduct.persistence.PurchaseProduct;
 
 import java.util.Set;
 import java.util.UUID;

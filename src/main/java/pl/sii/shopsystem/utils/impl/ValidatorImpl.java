@@ -1,11 +1,11 @@
-package pl.sii.shopsystem.client.service.impl;
+package pl.sii.shopsystem.utils.impl;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 import pl.sii.shopsystem.purchase.dto.PurchaseInputDto;
 import pl.sii.shopsystem.client.dto.ClientInputDto;
 import pl.sii.shopsystem.client.dto.ClientEmailInputDto;
-import pl.sii.shopsystem.client.service.Validator;
+import pl.sii.shopsystem.utils.Validator;
 
 @Component
 public class ValidatorImpl implements Validator {
