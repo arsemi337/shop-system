@@ -62,7 +62,7 @@ public class PurchaseServiceImpl implements PurchaseService {
         }
 
         // Get purchase client
-        Client client = clientRepository.findById(UUID.fromString(purchaseInputDto.userId()))
+        Client client = clientRepository.findById(UUID.fromString(purchaseInputDto.clientId()))
                 .orElseThrow(() -> new ClientException(NO_CLIENT_FOUND.getMessage()));
 
         // Create a list of objects, each of which contains a desired product and its quantity

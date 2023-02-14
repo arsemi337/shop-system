@@ -1,3 +1,8 @@
+DROP TABLE IF EXISTS client;
+DROP TABLE IF EXISTS purchase_product;
+DROP TABLE IF EXISTS purchase;
+DROP TABLE IF EXISTS product;
+
 CREATE TABLE client (
    id UUID NOT NULL,
    firstname VARCHAR(255),

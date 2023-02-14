@@ -5,5 +5,9 @@ import lombok.Builder;
 import java.util.UUID;
 
 @Builder
-public record ClientOutputDto(UUID id, String firstname, String lastname, String email) {
+public record ClientOutputDto(
+        UUID id,
+        String firstname,
+        String lastname,
+        String email) {
 }
