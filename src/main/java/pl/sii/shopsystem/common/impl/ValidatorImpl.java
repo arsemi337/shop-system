@@ -1,11 +1,11 @@
-package pl.sii.shopsystem.utils.impl;
+package pl.sii.shopsystem.common.impl;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 import pl.sii.shopsystem.purchase.dto.PurchaseInputDto;
 import pl.sii.shopsystem.client.dto.ClientInputDto;
 import pl.sii.shopsystem.client.dto.ClientEmailInputDto;
-import pl.sii.shopsystem.utils.Validator;
+import pl.sii.shopsystem.common.Validator;
 
 @Component
 public class ValidatorImpl implements Validator {
@@ -21,6 +21,6 @@ public class ValidatorImpl implements Validator {
 
     @Override
     public boolean isAnyBlank(PurchaseInputDto purchaseInputDto) {
-        return StringUtils.isAnyBlank(purchaseInputDto.userId(), purchaseInputDto.productId());
+        return StringUtils.isAnyBlank(purchaseInputDto.userId());
     }
 }

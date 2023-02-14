@@ -1,4 +1,4 @@
-package pl.sii.shopsystem.utils;
+package pl.sii.shopsystem.common;
 
 import pl.sii.shopsystem.purchase.dto.PurchaseInputDto;
 import pl.sii.shopsystem.client.dto.ClientInputDto;

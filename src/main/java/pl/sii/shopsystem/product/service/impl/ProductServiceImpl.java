@@ -2,6 +2,7 @@ package pl.sii.shopsystem.product.service.impl;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
 import pl.sii.shopsystem.product.dto.ProductOutputDto;
 import pl.sii.shopsystem.product.exception.ProductException;
 import pl.sii.shopsystem.product.repository.ProductRepository;
@@ -11,14 +12,15 @@ import java.util.UUID;
 
 import static pl.sii.shopsystem.product.exception.ProductExceptionMessages.NO_PRODUCT_FOUND;
 
+@Service
 public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
     private final ProductMapper productMapper;
 
-    ProductServiceImpl(ProductRepository productRepository, ProductMapper productMapper) {
+    ProductServiceImpl(ProductRepository productRepository) {
         this.productRepository = productRepository;
-        this.productMapper = productMapper;
+        this.productMapper = new ProductMapper();
     }
 
     @Override

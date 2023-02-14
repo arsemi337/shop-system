@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import pl.sii.shopsystem.purchase.purchaseProduct.persistence.PurchaseProduct;
 
+import java.math.BigDecimal;
 import java.util.Set;
 import java.util.UUID;
 
@@ -26,7 +27,7 @@ public class Product {
     @Column
     private String manufacturer;
     @Column
-    private String price;
+    private BigDecimal price;
 
     @OneToMany(mappedBy = "product")
     Set<PurchaseProduct> purchaseProducts;

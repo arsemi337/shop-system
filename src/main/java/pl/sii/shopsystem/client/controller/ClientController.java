@@ -7,8 +7,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.sii.shopsystem.client.dto.*;
 import pl.sii.shopsystem.client.service.ClientService;
-import pl.sii.shopsystem.purchase.dto.PurchaseInputDto;
-import pl.sii.shopsystem.purchase.dto.PurchaseOutputDto;
 
 @RestController
 @Tag(name = "Client")
@@ -37,10 +35,5 @@ public class ClientController {
     @PutMapping
     ResponseEntity<ClientOutputDto> updateClient(@RequestBody ClientInputDto clientInputDto) {
         return ResponseEntity.ok(clientService.updateClient(clientInputDto));
-    }
-
-    @PostMapping("/purchase")
-    ResponseEntity<PurchaseOutputDto> makePurchase(@RequestBody PurchaseInputDto purchaseInputDto) {
-        return ResponseEntity.ok(clientService.makePurchase(purchaseInputDto));
     }
 }
