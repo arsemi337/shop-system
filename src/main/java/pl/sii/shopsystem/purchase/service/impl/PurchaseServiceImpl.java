@@ -7,7 +7,6 @@ import pl.sii.shopsystem.client.exception.ClientException;
 import pl.sii.shopsystem.client.persistence.Client;
 import pl.sii.shopsystem.client.repository.ClientRepository;
 import pl.sii.shopsystem.common.TimeSupplier;
-import pl.sii.shopsystem.common.Validator;
 import pl.sii.shopsystem.product.persistence.Product;
 import pl.sii.shopsystem.product.repository.ProductRepository;
 import pl.sii.shopsystem.purchase.dto.PurchaseInputDto;
@@ -20,26 +19,27 @@ import pl.sii.shopsystem.purchase.purchaseProduct.persistence.PurchaseProductKey
 import pl.sii.shopsystem.purchase.purchaseProduct.repository.PurchaseProductRepository;
 import pl.sii.shopsystem.purchase.repository.PurchaseRepository;
 import pl.sii.shopsystem.purchase.service.PurchaseService;
+import pl.sii.shopsystem.purchase.service.PurchaseValidator;
 
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import static pl.sii.shopsystem.client.exception.ClientExceptionMessages.INPUT_DATA_CONTAINS_BLANK_FIELDS;
 import static pl.sii.shopsystem.client.exception.ClientExceptionMessages.NO_CLIENT_FOUND;
 
 @Service
 public class PurchaseServiceImpl implements PurchaseService {
 
-    private final Validator validator;
+    private final PurchaseValidator validator;
     private final ClientRepository clientRepository;
     private final ProductRepository productRepository;
     private final PurchaseRepository purchaseRepository;
     private final PurchaseProductRepository purchaseProductRepository;
     private final TimeSupplier timeSupplier;
+    private final PurchaseMapper purchaseMapper;
 
-    public PurchaseServiceImpl(Validator validator,
+    public PurchaseServiceImpl(PurchaseValidator validator,
                                ClientRepository clientRepository,
                                ProductRepository productRepository,
                                PurchaseRepository purchaseRepository,
@@ -51,26 +51,19 @@ public class PurchaseServiceImpl implements PurchaseService {
         this.purchaseRepository = purchaseRepository;
         this.purchaseProductRepository = purchaseProductRepository;
         this.timeSupplier = timeSupplier;
+        this.purchaseMapper = new PurchaseMapper();
     }
 
     @Override
     @Transactional
     public PurchaseOutputDto makePurchase(PurchaseInputDto purchaseInputDto) {
-        boolean isAnyBlank = validator.isAnyBlank(purchaseInputDto); //TODO take care of Validator class
-        if (isAnyBlank) {
-            throw new ClientException(INPUT_DATA_CONTAINS_BLANK_FIELDS.getMessage());
-        }
+        validator.validatePurchaseInputDto(purchaseInputDto);
 
         // Get purchase client
-        Client client = clientRepository.findById(UUID.fromString(purchaseInputDto.clientId()))
-                .orElseThrow(() -> new ClientException(NO_CLIENT_FOUND.getMessage()));
+        Client client = getClientById(purchaseInputDto);
 
         // Create a list of objects, each of which contains a desired product and its quantity
-        List<ProductQuantity> productQuantities = purchaseInputDto.purchaseProducts()
-                .stream()
-                .map(this::createProductQuantity)
-                .flatMap(Optional::stream)
-                .toList();
+        List<ProductQuantity> productQuantities = getProductQuantities(purchaseInputDto);
 
         // Calculate total purchase cost
         BigDecimal totalCost = calculateTotalCost(productQuantities);
@@ -83,7 +76,31 @@ public class PurchaseServiceImpl implements PurchaseService {
                 .build();
         purchaseRepository.save(purchase);
 
-        productQuantities
+        // Create PurchaseProduct objects and save them in a database
+        List<PurchaseProduct> purchaseProducts = getPurchaseProducts(productQuantities, purchase);
+        purchaseProducts.forEach(purchaseProductRepository::save);
+
+        return purchaseMapper.mapToPurchaseOutputDto(
+                client,
+                getPurchaseProductOutputDtoList(productQuantities),
+                totalCost);
+    }
+
+    private Client getClientById(PurchaseInputDto purchaseInputDto) {
+        return clientRepository.findById(UUID.fromString(purchaseInputDto.clientId()))
+                .orElseThrow(() -> new ClientException(NO_CLIENT_FOUND.getMessage()));
+    }
+
+    private List<ProductQuantity> getProductQuantities(PurchaseInputDto purchaseInputDto) {
+        return purchaseInputDto.purchaseProducts()
+                .stream()
+                .map(this::createProductQuantity)
+                .flatMap(Optional::stream)
+                .toList();
+    }
+
+    private List<PurchaseProduct> getPurchaseProducts(List<ProductQuantity> productQuantities, Purchase purchase) {
+        return productQuantities
                 .stream()
                 .map(productQuantity -> PurchaseProduct.builder()
                         .purchaseProductKey(
@@ -91,19 +108,11 @@ public class PurchaseServiceImpl implements PurchaseService {
                                         .productId(productQuantity.product().getId())
                                         .purchaseId(purchase.getId())
                                         .build())
-                                .product(productQuantity.product)
-                                .purchase(purchase)
-                                .quantity(productQuantity.quantity)
-                                .build())
-                        .map(purchaseProductRepository::save);
-
-        return PurchaseOutputDto.builder()
-                .clientFirstname(client.getFirstname())
-                .clientLastname(client.getLastname())
-                .clientEmail(client.getEmail())
-                .purchasedProducts(getPurchaseProductOutputDtoList(productQuantities))
-                .totalCost(totalCost)
-                .build();
+                        .product(productQuantity.product)
+                        .purchase(purchase)
+                        .quantity(productQuantity.quantity)
+                        .build())
+                .toList();
     }
 
     private List<PurchaseProductOutputDto> getPurchaseProductOutputDtoList(List<ProductQuantity> productQuantities) {

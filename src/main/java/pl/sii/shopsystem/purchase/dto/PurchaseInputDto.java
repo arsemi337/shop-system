@@ -6,5 +6,7 @@ import pl.sii.shopsystem.purchase.purchaseProduct.dto.PurchaseProductInputDto;
 import java.util.List;
 
 @Builder
-public record PurchaseInputDto(String clientId, List<PurchaseProductInputDto> purchaseProducts) {
+public record PurchaseInputDto(
+        String clientId,
+        List<PurchaseProductInputDto> purchaseProducts) {
 }
