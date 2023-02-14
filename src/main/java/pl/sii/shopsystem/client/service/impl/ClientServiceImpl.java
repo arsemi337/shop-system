@@ -6,17 +6,17 @@ import pl.sii.shopsystem.client.exception.ClientException;
 import pl.sii.shopsystem.client.persistence.*;
 import pl.sii.shopsystem.client.repository.ClientRepository;
 import pl.sii.shopsystem.client.service.ClientService;
-import pl.sii.shopsystem.common.Validator;
+import pl.sii.shopsystem.client.service.ClientValidator;
 
 import static pl.sii.shopsystem.client.exception.ClientExceptionMessages.*;
 
 @Service
 public class ClientServiceImpl implements ClientService {
 
-    private final Validator validator;
+    private final ClientValidator validator;
     private final ClientRepository clientRepository;
 
-    public ClientServiceImpl(Validator validator,
+    public ClientServiceImpl(ClientValidator validator,
                              ClientRepository clientRepository) {
         this.validator = validator;
         this.clientRepository = clientRepository;
@@ -24,14 +24,8 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public ClientOutputDto addClient(ClientInputDto clientInputDto) {
-        boolean isAnyBlank = validator.isAnyBlank(clientInputDto);
-        if (isAnyBlank) {
-            throw new ClientException(INPUT_DATA_CONTAINS_BLANK_FIELDS.getMessage());
-        }
-        boolean doesExist = clientRepository.existsByEmail(clientInputDto.email());
-        if (doesExist) {
-            throw new ClientException(CLIENT_ALREADY_EXISTS.getMessage());
-        }
+        validator.validateClientInputDto(clientInputDto);
+        validator.validateClientExistence(clientInputDto.email());
 
         Client client = clientRepository.save(
                 Client.builder()
@@ -50,10 +44,7 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public ClientOutputDto getClient(ClientEmailInputDto clientEmailInputDto) {
-        boolean isAnyBlank = validator.isAnyBlank(clientEmailInputDto);
-        if (isAnyBlank) {
-            throw new ClientException(INPUT_DATA_CONTAINS_BLANK_FIELDS.getMessage());
-        }
+        validator.validateClientEmailInputDto(clientEmailInputDto);
 
         Client client = getClientByEmail(clientEmailInputDto.email());
 
@@ -67,10 +58,7 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public void removeClient(ClientEmailInputDto clientEmailInputDto) {
-        boolean isAnyBlank = validator.isAnyBlank(clientEmailInputDto);
-        if (isAnyBlank) {
-            throw new ClientException(INPUT_DATA_CONTAINS_BLANK_FIELDS.getMessage());
-        }
+        validator.validateClientEmailInputDto(clientEmailInputDto);
 
         Client client = getClientByEmail(clientEmailInputDto.email());
         clientRepository.deleteById(client.getId());
@@ -78,18 +66,11 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public ClientOutputDto updateClient(ClientInputDto clientInputDto) {
-        boolean isAnyBlank = validator.isAnyBlank(clientInputDto);
-        if (isAnyBlank) {
-            throw new ClientException(INPUT_DATA_CONTAINS_BLANK_FIELDS.getMessage());
-        }
+        validator.validateClientInputDto(clientInputDto);
 
         Client client = getClientByEmail(clientInputDto.email());
 
-        if (!client.getEmail().equals(clientInputDto.email())
-                && clientRepository.existsByEmail(client.getEmail())) {
-            throw new ClientException(EMAIL_ALREADY_USED.getMessage());
-        }
-
+        validator.validateEmailChange(client.getEmail(), clientInputDto.email());
 
         client.setFirstname(client.getFirstname());
         client.setLastname(client.getLastname());
