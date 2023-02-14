@@ -11,6 +11,7 @@ import pl.sii.shopsystem.product.persistence.Product;
 import pl.sii.shopsystem.product.repository.ProductRepository;
 import pl.sii.shopsystem.purchase.dto.PurchaseInputDto;
 import pl.sii.shopsystem.purchase.dto.PurchaseOutputDto;
+import pl.sii.shopsystem.purchase.exception.PurchaseException;
 import pl.sii.shopsystem.purchase.persistence.Purchase;
 import pl.sii.shopsystem.purchase.purchaseProduct.dto.PurchaseProductInputDto;
 import pl.sii.shopsystem.purchase.purchaseProduct.dto.PurchaseProductOutputDto;
@@ -27,6 +28,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import static pl.sii.shopsystem.client.exception.ClientExceptionMessages.NO_CLIENT_FOUND;
+import static pl.sii.shopsystem.purchase.exception.PurchaseExceptionMessages.*;
 
 @Service
 public class PurchaseServiceImpl implements PurchaseService {
@@ -99,6 +101,21 @@ public class PurchaseServiceImpl implements PurchaseService {
                 .toList();
     }
 
+    private BigDecimal calculateTotalCost(List<ProductQuantity> productQuantities) {
+        BigDecimal totalCost = new BigDecimal(0);
+        BigDecimal quantity;
+        BigDecimal price;
+
+        for (ProductQuantity productQuantity : productQuantities) {
+            quantity = new BigDecimal(productQuantity.quantity);
+            price = productQuantity.product.getPrice();
+
+            BigDecimal productCost = price.multiply(quantity);
+            totalCost = totalCost.add(productCost);
+        }
+        return totalCost;
+    }
+
     private List<PurchaseProduct> getPurchaseProducts(List<ProductQuantity> productQuantities, Purchase purchase) {
         return productQuantities
                 .stream()
@@ -129,41 +146,42 @@ public class PurchaseServiceImpl implements PurchaseService {
     }
 
     private Optional<ProductQuantity> createProductQuantity(PurchaseProductInputDto inputDto) {
-        UUID uuid = UUID.fromString(inputDto.productId());
-        Product product = productRepository.findById(uuid).orElse(null);
-        if (product == null || !isQuantityValid(inputDto.quantity())) {
-            return Optional.empty();
-        }
+        UUID uuid = parseUUID(inputDto);
+        Product product = productRepository.findById(uuid)
+                .orElseThrow(() -> new PurchaseException(PRODUCT_NOT_FOUND.getMessage()));
+
+        int quantity = parseQuantity(inputDto.quantity());
+        validateQuantity(quantity);
+
         ProductQuantity productQuantity = ProductQuantity.builder()
                 .product(product)
-                .quantity(Integer.parseInt(inputDto.quantity())) //TODO pomyśleć nad tym, że dwa razy jest parsowane to quantity
+                .quantity(quantity)
                 .build();
         return Optional.of(productQuantity);
     }
 
-    private boolean isQuantityValid(String quantity) {
+    private UUID parseUUID(PurchaseProductInputDto inputDto) {
+        try {
+            return UUID.fromString(inputDto.productId());
+        } catch (IllegalArgumentException e) {
+            throw new PurchaseException(PRODUCT_ID_HAS_INVALID_FORM.getMessage() + inputDto.productId());
+        }
+    }
+
+    private int parseQuantity(String quantity) {
         int quantityNumber;
         try {
             quantityNumber = Integer.parseInt(quantity);
         } catch (NumberFormatException e) {
-            return false;
+            throw new PurchaseException(PRODUCT_QUANTITY_IS_NOT_NUMBER.getMessage() + quantity);
         }
-        return quantityNumber >= 0;
+        return quantityNumber;
     }
 
-    private BigDecimal calculateTotalCost(List<ProductQuantity> productQuantities) {
-        BigDecimal totalCost = new BigDecimal(0);
-        BigDecimal quantity;
-        BigDecimal price;
-
-        for (ProductQuantity productQuantity : productQuantities) {
-            quantity = new BigDecimal(productQuantity.quantity);
-            price = productQuantity.product.getPrice();
-
-            BigDecimal productCost = price.multiply(quantity);
-            totalCost = totalCost.add(productCost);
+    private void validateQuantity(int quantity) {
+        if (quantity <= 0) {
+            throw new PurchaseException(PRODUCT_QUANTITY_LOWER_OR_EQUAL_ZERO.getMessage() + quantity);
         }
-        return totalCost;
     }
 
     @Builder
