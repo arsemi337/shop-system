@@ -15,10 +15,13 @@ import static pl.sii.shopsystem.product.exception.ProductExceptionMessages.NO_PR
 @Service
 public class ProductServiceImpl implements ProductService {
 
+
+    private final ProductParser parser;
     private final ProductRepository productRepository;
     private final ProductMapper productMapper;
 
     ProductServiceImpl(ProductRepository productRepository) {
+        this.parser = new ProductParser();
         this.productRepository = productRepository;
         this.productMapper = new ProductMapper();
     }
@@ -31,7 +34,8 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductOutputDto fetchProductById(String id) {
-        return productRepository.findById(UUID.fromString(id))
+        UUID productId = parser.parseUUID(id);
+        return productRepository.findById(productId)
                 .map(productMapper::mapToProductOutputDto)
                 .orElseThrow(() -> new ProductException(NO_PRODUCT_FOUND.getMessage()));
     }
