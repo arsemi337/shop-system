@@ -1,4 +1,4 @@
-package pl.sii.shopsystem.common;
+package supplier;
 
 import java.time.LocalDateTime;
 import java.util.function.Supplier;

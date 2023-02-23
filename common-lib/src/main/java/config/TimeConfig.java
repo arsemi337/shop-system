@@ -1,8 +1,8 @@
-package pl.sii.shopsystem.config;
+package config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import pl.sii.shopsystem.common.TimeSupplier;
+import supplier.TimeSupplier;
 
 import java.time.LocalDateTime;
 
