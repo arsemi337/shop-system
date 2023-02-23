@@ -16,10 +16,10 @@ Having the database run, the Spring Boot application can be started with the use
 ```
 
 After running, the application is available at *localhost:8080* and exposes its services through REST API endpoints. 
-They are divided into three groups of resources: Client, Product, Purchase. These endpoints are: 
+They are divided into three groups of resources: Customer, Product, Purchase. These endpoints are: 
 
-### Client
-* POST **/api/v1/client** - creates a client's account
+### Customer
+* POST **/api/v1/customer** - creates a customer's account
 
 #### Request body
 
@@ -27,7 +27,7 @@ They are divided into three groups of resources: Client, Product, Purchase. Thes
 {
   "firstname": "John",
   "lastname": "Doe",
-  "email": "email@email.com"
+  "email": "newEmail@newEmail.com"
 }
 ```
 
@@ -38,17 +38,17 @@ They are divided into three groups of resources: Client, Product, Purchase. Thes
   "id": "83cb721b-e18c-4890-8d3d-fa9a8ede8283",
   "firstname": "John",
   "lastname": "Doe",
-  "email": "email@email.com"
+  "email": "newEmail@newEmail.com"
 }
 ```
 
-* GET **/api/v1/client** - fetches a client's account
+* GET **/api/v1/customer** - fetches a customer's account
 
 #### Request body
 
 ```json
 {
-  "email": "email@email.com"
+  "email": "newEmail@newEmail.com"
 }
 ```
 
@@ -59,21 +59,21 @@ They are divided into three groups of resources: Client, Product, Purchase. Thes
   "id": "83cb721b-e18c-4890-8d3d-fa9a8ede8283",
   "firstname": "John",
   "lastname": "Doe",
-  "email": "email@email.com"
+  "email": "newEmail@newEmail.com"
 }
 ```
 
-* DELETE **/api/v1/client** - soft deletes a client's account
+* DELETE **/api/v1/customer** - soft deletes a customer's account
 
 #### Request body
 
 ```json
 {
-  "email": "email@email.com"
+  "email": "newEmail@newEmail.com"
 }
 ```
 
-* PUT **/api/v1/client** - updates a client's account
+* PUT **/api/v1/customer** - updates a customer's account
 
 #### Request body
 
@@ -81,7 +81,7 @@ They are divided into three groups of resources: Client, Product, Purchase. Thes
 {
   "firstname": "John",
   "lastname": "Doe",
-  "email": "email@email.com"
+  "email": "newEmail@newEmail.com"
 }
 ```
 
@@ -92,7 +92,7 @@ They are divided into three groups of resources: Client, Product, Purchase. Thes
   "id": "83cb721b-e18c-4890-8d3d-fa9a8ede8283",
   "firstname": "John",
   "lastname": "Doe",
-  "email": "email@email.com"
+  "email": "newEmail@newEmail.com"
 }
 ```
 
@@ -136,15 +136,15 @@ which take page number and page size, correspondingly.
 }
 ```
 
-### Purchase
-* POST **/api/v1/purchase** - makes a purchase of given products bought by a specific user
+### Order
+* POST **/api/v1/order** - makes a order of given products bought by a specific user
 
 #### Request body
 
 ```json
 {
-  "clientId": "83cb721b-e18c-4890-8d3d-fa9a8ede8283",
-  "purchaseProducts": [
+  "customerId": "83cb721b-e18c-4890-8d3d-fa9a8ede8283",
+  "orderProducts": [
     {
       "productId": "7a9c839a-ac5c-11ed-afa1-0242ac120002",
       "quantity": 10
@@ -158,10 +158,10 @@ which take page number and page size, correspondingly.
 
 ```json
 {
-  "clientFirstname": "Jonh",
-  "clientLastname": "Doe",
-  "clientEmail": "email@email.com",
-  "purchasedProducts": [
+  "customerFirstname": "Jonh",
+  "customerLastname": "Doe",
+  "customerEmail": "newEmail@newEmail.com",
+  "orderedProducts": [
     {
       "title": "Pixel 6",
       "type": "Smartphone",

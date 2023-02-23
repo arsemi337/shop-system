@@ -1,7 +1,7 @@
 package pl.sii.shopsystem.product.service.impl;
 
 import pl.sii.shopsystem.product.dto.ProductOutputDto;
-import pl.sii.shopsystem.product.persistence.Product;
+import pl.sii.shopsystem.product.model.Product;
 
 class ProductMapper {
 

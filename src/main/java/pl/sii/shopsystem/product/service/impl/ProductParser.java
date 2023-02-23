@@ -1,6 +1,6 @@
 package pl.sii.shopsystem.product.service.impl;
 
-import pl.sii.shopsystem.purchase.exception.PurchaseException;
+import pl.sii.shopsystem.order.exception.OrderException;
 
 import java.util.UUID;
 
@@ -13,7 +13,7 @@ public class ProductParser {
         try {
             return UUID.fromString(uuid);
         } catch (IllegalArgumentException e) {
-            throw new PurchaseException(UUID_HAS_INVALID_FORM.getMessage() + uuid);
+            throw new OrderException(UUID_HAS_INVALID_FORM.getMessage() + uuid);
         }
     }
 }
