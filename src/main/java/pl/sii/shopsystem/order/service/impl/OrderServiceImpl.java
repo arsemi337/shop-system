@@ -8,7 +8,6 @@ import pl.sii.shopsystem.customer.repository.CustomerRepository;
 import pl.sii.shopsystem.customer.service.impl.ProductQuantity;
 import pl.sii.shopsystem.order.dto.OrderInputDto;
 import pl.sii.shopsystem.order.dto.OrderOutputDto;
-import pl.sii.shopsystem.order.exception.OrderException;
 import pl.sii.shopsystem.order.model.Order;
 import pl.sii.shopsystem.order.orderProduct.dto.OrderProductInputDto;
 import pl.sii.shopsystem.order.orderProduct.model.OrderProduct;
@@ -62,7 +61,7 @@ public class OrderServiceImpl implements OrderService {
         validator.validateOrderInputDto(orderInputDto);
 
         // Get order customer
-        UUID customerId = parser.parseUUID(orderInputDto.customerId());
+        UUID customerId = UUID.fromString(orderInputDto.customerId());
         Customer customer = customerRepository.findById(customerId)
                 .orElseThrow(() -> new NoSuchElementException(NO_CUSTOMER_BY_EMAIL_FOUND.getMessage()));
 
@@ -109,9 +108,9 @@ public class OrderServiceImpl implements OrderService {
     }
 
     private Optional<ProductQuantity> createProductQuantity(OrderProductInputDto inputDto) {
-        UUID uuid = parser.parseUUID(inputDto.productId());
+        UUID uuid = UUID.fromString(inputDto.productId());
         Product product = productRepository.findById(uuid)
-                .orElseThrow(() -> new OrderException(PRODUCT_NOT_FOUND.getMessage()));
+                .orElseThrow(() -> new NoSuchElementException(PRODUCT_NOT_FOUND.getMessage()));
 
         int quantity = parser.parseQuantity(inputDto.quantity());
         validator.validateQuantity(quantity);

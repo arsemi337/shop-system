@@ -3,7 +3,6 @@ package pl.sii.shopsystem.order.service.impl;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 import pl.sii.shopsystem.order.dto.OrderInputDto;
-import pl.sii.shopsystem.order.exception.OrderException;
 import pl.sii.shopsystem.order.orderProduct.dto.OrderProductInputDto;
 import pl.sii.shopsystem.order.service.OrderValidator;
 
@@ -28,7 +27,7 @@ public class OrderValidatorImpl implements OrderValidator {
     @Override
     public void validateQuantity(int quantity) {
         if (quantity <= 0) {
-            throw new OrderException(PRODUCT_QUANTITY_LOWER_OR_EQUAL_ZERO.getMessage() + quantity);
+            throw new IllegalArgumentException(PRODUCT_QUANTITY_LOWER_OR_EQUAL_ZERO.getMessage() + quantity);
         }
     }
 
