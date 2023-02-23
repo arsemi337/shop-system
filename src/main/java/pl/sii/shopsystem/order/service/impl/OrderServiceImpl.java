@@ -2,23 +2,23 @@ package pl.sii.shopsystem.order.service.impl;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import pl.sii.shopsystem.common.TimeSupplier;
 import pl.sii.shopsystem.customer.exception.CustomerException;
 import pl.sii.shopsystem.customer.model.Customer;
 import pl.sii.shopsystem.customer.repository.CustomerRepository;
 import pl.sii.shopsystem.customer.service.impl.ProductQuantity;
-import pl.sii.shopsystem.common.TimeSupplier;
-import pl.sii.shopsystem.order.model.Order;
-import pl.sii.shopsystem.order.orderProduct.model.OrderProduct;
-import pl.sii.shopsystem.product.model.Product;
-import pl.sii.shopsystem.product.repository.ProductRepository;
 import pl.sii.shopsystem.order.dto.OrderInputDto;
 import pl.sii.shopsystem.order.dto.OrderOutputDto;
 import pl.sii.shopsystem.order.exception.OrderException;
+import pl.sii.shopsystem.order.model.Order;
 import pl.sii.shopsystem.order.orderProduct.dto.OrderProductInputDto;
+import pl.sii.shopsystem.order.orderProduct.model.OrderProduct;
 import pl.sii.shopsystem.order.orderProduct.repository.OrderProductRepository;
 import pl.sii.shopsystem.order.repository.OrderRepository;
 import pl.sii.shopsystem.order.service.OrderService;
 import pl.sii.shopsystem.order.service.OrderValidator;
+import pl.sii.shopsystem.product.model.Product;
+import pl.sii.shopsystem.product.repository.ProductRepository;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -26,7 +26,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import static pl.sii.shopsystem.customer.exception.CustomerExceptionMessages.NO_CUSTOMER_BY_EMAIL_FOUND;
-import static pl.sii.shopsystem.order.exception.OrderExceptionMessages.*;
+import static pl.sii.shopsystem.order.exception.OrderExceptionMessages.PRODUCT_NOT_FOUND;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -62,7 +62,9 @@ public class OrderServiceImpl implements OrderService {
         validator.validateOrderInputDto(orderInputDto);
 
         // Get order customer
-        Customer customer = getCustomerById(orderInputDto);
+        UUID customerId = parser.parseUUID(orderInputDto.customerId());
+        Customer customer = customerRepository.findById(customerId)
+                .orElseThrow(() -> new CustomerException(NO_CUSTOMER_BY_EMAIL_FOUND.getMessage()));
 
         // Create a list of objects, each of which contains a desired product and its quantity
         List<ProductQuantity> productQuantities = orderMapper.mapToProductQuantities(
@@ -89,12 +91,6 @@ public class OrderServiceImpl implements OrderService {
                 customer,
                 orderMapper.mapToOrderProductOutputDtoList(productQuantities),
                 totalCost);
-    }
-
-    private Customer getCustomerById(OrderInputDto orderInputDto) {
-        UUID customerId = parser.parseUUID(orderInputDto.customerId());
-        return customerRepository.findById(customerId)
-                .orElseThrow(() -> new CustomerException(NO_CUSTOMER_BY_EMAIL_FOUND.getMessage()));
     }
 
     private BigDecimal calculateTotalCost(List<ProductQuantity> productQuantities) {

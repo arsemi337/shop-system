@@ -2,16 +2,20 @@ package pl.sii.shopsystem.customer.service.impl;
 
 import org.springframework.stereotype.Service;
 import pl.sii.shopsystem.common.TimeSupplier;
-import pl.sii.shopsystem.customer.dto.*;
+import pl.sii.shopsystem.customer.dto.CustomerEmailInputDto;
+import pl.sii.shopsystem.customer.dto.CustomerInputDto;
+import pl.sii.shopsystem.customer.dto.CustomerOutputDto;
+import pl.sii.shopsystem.customer.dto.UpdateCustomerInputDto;
 import pl.sii.shopsystem.customer.exception.CustomerException;
-import pl.sii.shopsystem.customer.model.*;
+import pl.sii.shopsystem.customer.model.Customer;
 import pl.sii.shopsystem.customer.repository.CustomerRepository;
 import pl.sii.shopsystem.customer.service.CustomerService;
 import pl.sii.shopsystem.customer.service.CustomerValidator;
 
 import java.util.UUID;
 
-import static pl.sii.shopsystem.customer.exception.CustomerExceptionMessages.*;
+import static pl.sii.shopsystem.customer.exception.CustomerExceptionMessages.NO_CUSTOMER_BY_EMAIL_FOUND;
+import static pl.sii.shopsystem.customer.exception.CustomerExceptionMessages.NO_CUSTOMER_BY_ID_FOUND;
 
 @Service
 public class CustomerServiceImpl implements CustomerService {
@@ -55,7 +59,8 @@ public class CustomerServiceImpl implements CustomerService {
     public CustomerOutputDto getCustomer(CustomerEmailInputDto customerEmailInputDto) {
         validator.validateCustomerEmailInputDto(customerEmailInputDto);
 
-        Customer customer = getCustomerByEmail(customerEmailInputDto.email());
+        Customer customer = customerRepository.findByEmail(customerEmailInputDto.email())
+                .orElseThrow(() -> new CustomerException(NO_CUSTOMER_BY_EMAIL_FOUND.getMessage()));
 
         return CustomerOutputDto.builder()
                 .id(customer.getId())
@@ -69,7 +74,8 @@ public class CustomerServiceImpl implements CustomerService {
     public void removeCustomer(CustomerEmailInputDto customerEmailInputDto) {
         validator.validateCustomerEmailInputDto(customerEmailInputDto);
 
-        Customer customer = getCustomerByEmail(customerEmailInputDto.email());
+        Customer customer = customerRepository.findByEmail(customerEmailInputDto.email())
+                .orElseThrow(() -> new CustomerException(NO_CUSTOMER_BY_EMAIL_FOUND.getMessage()));
         customerRepository.deleteById(customer.getId());
     }
 
@@ -79,7 +85,7 @@ public class CustomerServiceImpl implements CustomerService {
 
         UUID id = customerParser.parseUUID(updateCustomerInputDto.id());
         Customer customer = customerRepository.findById(id)
-                        .orElseThrow(() -> new CustomerException(NO_CUSTOMER_BY_ID_FOUND.getMessage()));
+                .orElseThrow(() -> new CustomerException(NO_CUSTOMER_BY_ID_FOUND.getMessage()));
 
         validator.validateEmailChange(customer.getEmail(), updateCustomerInputDto.newEmail());
 
@@ -95,10 +101,5 @@ public class CustomerServiceImpl implements CustomerService {
                 .lastname(customer.getLastname())
                 .email(customer.getEmail())
                 .build();
-    }
-
-    private Customer getCustomerByEmail(String email) {
-        return customerRepository.findByEmail(email)
-                .orElseThrow(() -> new CustomerException(NO_CUSTOMER_BY_EMAIL_FOUND.getMessage()));
     }
 }

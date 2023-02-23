@@ -21,14 +21,11 @@ public class Customer {
 
     @Id
     @GeneratedValue
-    @Column(name = "id")
     private UUID id;
-    @Column(name = "creation_time")
     private LocalDateTime creationTime;
     private String firstname;
     private String lastname;
     private String email;
-    @Column(name = "is_deleted")
     private boolean isDeleted = Boolean.FALSE;
 
     @Override
