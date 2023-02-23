@@ -18,7 +18,7 @@ public class ControllerExceptionHandler {
     }
 
     @ExceptionHandler
-    ResponseEntity<ErrorResponse> exceptionHandler(BusinessLogicException e) {
+    ResponseEntity<ErrorResponse> exceptionHandler(RuntimeException e) {
         ErrorResponse errorResponse = ErrorResponse.builder()
                 .statusCode(BAD_REQUEST.value())
                 .message(e.getMessage())

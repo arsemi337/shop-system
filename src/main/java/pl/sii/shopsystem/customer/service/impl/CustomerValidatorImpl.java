@@ -3,7 +3,6 @@ package pl.sii.shopsystem.customer.service.impl;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 import pl.sii.shopsystem.customer.dto.UpdateCustomerInputDto;
-import pl.sii.shopsystem.customer.exception.CustomerException;
 import pl.sii.shopsystem.customer.repository.CustomerRepository;
 import pl.sii.shopsystem.customer.service.CustomerValidator;
 import pl.sii.shopsystem.customer.dto.CustomerInputDto;
@@ -23,28 +22,28 @@ class CustomerValidatorImpl implements CustomerValidator {
     @Override
     public void validateCustomerInputDto(CustomerInputDto customerInputDto) {
         if (isAnyBlank(customerInputDto)) {
-            throw new CustomerException(INPUT_DATA_CONTAINS_BLANK_FIELDS.getMessage());
+            throw new IllegalArgumentException(INPUT_DATA_CONTAINS_BLANK_FIELDS.getMessage());
         }
     }
 
     @Override
     public void validateUpdateCustomerInputDto(UpdateCustomerInputDto updateCustomerInputDto) {
         if (isAnyBlank(updateCustomerInputDto)) {
-            throw new CustomerException(INPUT_DATA_CONTAINS_BLANK_FIELDS.getMessage());
+            throw new IllegalArgumentException(INPUT_DATA_CONTAINS_BLANK_FIELDS.getMessage());
         }
     }
 
     @Override
     public void validateCustomerEmailInputDto(CustomerEmailInputDto customerEmailInputDto) {
         if (isAnyBlank(customerEmailInputDto)) {
-            throw new CustomerException(INPUT_DATA_CONTAINS_BLANK_FIELDS.getMessage());
+            throw new IllegalArgumentException(INPUT_DATA_CONTAINS_BLANK_FIELDS.getMessage());
         }
     }
 
     @Override
     public void validateCustomerExistence(String email) {
         if (customerRepository.existsByEmail(email)) {
-            throw new CustomerException(CUSTOMER_ALREADY_EXISTS.getMessage());
+            throw new IllegalArgumentException(CUSTOMER_ALREADY_EXISTS.getMessage());
         }
     }
 
@@ -54,7 +53,7 @@ class CustomerValidatorImpl implements CustomerValidator {
             return;
         }
         if (customerRepository.existsByEmail(newEmail)) {
-            throw new CustomerException(EMAIL_ALREADY_USED.getMessage());
+            throw new IllegalArgumentException(EMAIL_ALREADY_USED.getMessage());
         }
     }
 

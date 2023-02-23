@@ -1,8 +1,6 @@
 package pl.sii.shopsystem.product.exception;
 
-import pl.sii.shopsystem.exception.BusinessLogicException;
-
-public class ProductException  extends BusinessLogicException {
+public class ProductException  extends RuntimeException {
     public ProductException(String errorMessage) {
         super(errorMessage);
     }

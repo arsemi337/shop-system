@@ -3,7 +3,6 @@ package pl.sii.shopsystem.order.service.impl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.sii.shopsystem.common.TimeSupplier;
-import pl.sii.shopsystem.customer.exception.CustomerException;
 import pl.sii.shopsystem.customer.model.Customer;
 import pl.sii.shopsystem.customer.repository.CustomerRepository;
 import pl.sii.shopsystem.customer.service.impl.ProductQuantity;
@@ -22,6 +21,7 @@ import pl.sii.shopsystem.product.repository.ProductRepository;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -64,7 +64,7 @@ public class OrderServiceImpl implements OrderService {
         // Get order customer
         UUID customerId = parser.parseUUID(orderInputDto.customerId());
         Customer customer = customerRepository.findById(customerId)
-                .orElseThrow(() -> new CustomerException(NO_CUSTOMER_BY_EMAIL_FOUND.getMessage()));
+                .orElseThrow(() -> new NoSuchElementException(NO_CUSTOMER_BY_EMAIL_FOUND.getMessage()));
 
         // Create a list of objects, each of which contains a desired product and its quantity
         List<ProductQuantity> productQuantities = orderMapper.mapToProductQuantities(

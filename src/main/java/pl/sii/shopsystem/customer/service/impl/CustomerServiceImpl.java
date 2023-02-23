@@ -6,12 +6,12 @@ import pl.sii.shopsystem.customer.dto.CustomerEmailInputDto;
 import pl.sii.shopsystem.customer.dto.CustomerInputDto;
 import pl.sii.shopsystem.customer.dto.CustomerOutputDto;
 import pl.sii.shopsystem.customer.dto.UpdateCustomerInputDto;
-import pl.sii.shopsystem.customer.exception.CustomerException;
 import pl.sii.shopsystem.customer.model.Customer;
 import pl.sii.shopsystem.customer.repository.CustomerRepository;
 import pl.sii.shopsystem.customer.service.CustomerService;
 import pl.sii.shopsystem.customer.service.CustomerValidator;
 
+import java.util.NoSuchElementException;
 import java.util.UUID;
 
 import static pl.sii.shopsystem.customer.exception.CustomerExceptionMessages.NO_CUSTOMER_BY_EMAIL_FOUND;
@@ -21,7 +21,6 @@ import static pl.sii.shopsystem.customer.exception.CustomerExceptionMessages.NO_
 public class CustomerServiceImpl implements CustomerService {
 
     private final CustomerValidator validator;
-    private final CustomerParser customerParser;
     private final TimeSupplier timeSupplier;
     private final CustomerRepository customerRepository;
 
@@ -29,7 +28,6 @@ public class CustomerServiceImpl implements CustomerService {
                                TimeSupplier timeSupplier,
                                CustomerRepository customerRepository) {
         this.validator = validator;
-        this.customerParser = new CustomerParser();
         this.timeSupplier = timeSupplier;
         this.customerRepository = customerRepository;
     }
@@ -60,7 +58,7 @@ public class CustomerServiceImpl implements CustomerService {
         validator.validateCustomerEmailInputDto(customerEmailInputDto);
 
         Customer customer = customerRepository.findByEmail(customerEmailInputDto.email())
-                .orElseThrow(() -> new CustomerException(NO_CUSTOMER_BY_EMAIL_FOUND.getMessage()));
+                .orElseThrow(() -> new NoSuchElementException(NO_CUSTOMER_BY_EMAIL_FOUND.getMessage()));
 
         return CustomerOutputDto.builder()
                 .id(customer.getId())
@@ -75,7 +73,7 @@ public class CustomerServiceImpl implements CustomerService {
         validator.validateCustomerEmailInputDto(customerEmailInputDto);
 
         Customer customer = customerRepository.findByEmail(customerEmailInputDto.email())
-                .orElseThrow(() -> new CustomerException(NO_CUSTOMER_BY_EMAIL_FOUND.getMessage()));
+                .orElseThrow(() -> new NoSuchElementException(NO_CUSTOMER_BY_EMAIL_FOUND.getMessage()));
         customerRepository.deleteById(customer.getId());
     }
 
@@ -83,9 +81,9 @@ public class CustomerServiceImpl implements CustomerService {
     public CustomerOutputDto updateCustomer(UpdateCustomerInputDto updateCustomerInputDto) {
         validator.validateUpdateCustomerInputDto(updateCustomerInputDto);
 
-        UUID id = customerParser.parseUUID(updateCustomerInputDto.id());
+        UUID id = UUID.fromString(updateCustomerInputDto.id());
         Customer customer = customerRepository.findById(id)
-                .orElseThrow(() -> new CustomerException(NO_CUSTOMER_BY_ID_FOUND.getMessage()));
+                .orElseThrow(() -> new NoSuchElementException(NO_CUSTOMER_BY_ID_FOUND.getMessage()));
 
         validator.validateEmailChange(customer.getEmail(), updateCustomerInputDto.newEmail());
 

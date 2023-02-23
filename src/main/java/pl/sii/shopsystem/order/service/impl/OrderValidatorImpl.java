@@ -2,7 +2,6 @@ package pl.sii.shopsystem.order.service.impl;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
-import pl.sii.shopsystem.customer.exception.CustomerException;
 import pl.sii.shopsystem.order.dto.OrderInputDto;
 import pl.sii.shopsystem.order.exception.OrderException;
 import pl.sii.shopsystem.order.orderProduct.dto.OrderProductInputDto;
@@ -17,11 +16,11 @@ public class OrderValidatorImpl implements OrderValidator {
     @Override
     public void validateOrderInputDto(OrderInputDto orderInputDto) {
         if (isCustomerIdBlank(orderInputDto)) {
-            throw new CustomerException(INPUT_DATA_CONTAINS_BLANK_FIELDS.getMessage());
+            throw new IllegalArgumentException(INPUT_DATA_CONTAINS_BLANK_FIELDS.getMessage());
         }
         for (OrderProductInputDto inputDto : orderInputDto.orderProducts()) {
             if (isAnyBlank(inputDto)) {
-                throw new CustomerException(INPUT_DATA_CONTAINS_BLANK_FIELDS.getMessage());
+                throw new IllegalArgumentException(INPUT_DATA_CONTAINS_BLANK_FIELDS.getMessage());
             }
         }
     }

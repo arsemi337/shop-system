@@ -1,5 +1,10 @@
 package pl.sii.shopsystem.order.exception;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+@AllArgsConstructor
+@Getter
 public enum OrderExceptionMessages {
     UUID_HAS_INVALID_FORM("Passed UUID has invalid form: "),
     PRODUCT_NOT_FOUND("Product with given ID was not found: "),
@@ -8,11 +13,4 @@ public enum OrderExceptionMessages {
 
     private final String message;
 
-    OrderExceptionMessages(String message) {
-        this.message = message;
-    }
-
-    public String getMessage() {
-        return message;
-    }
 }

@@ -1,8 +1,6 @@
 package pl.sii.shopsystem.order.exception;
 
-import pl.sii.shopsystem.exception.BusinessLogicException;
-
-public class OrderException extends BusinessLogicException {
+public class OrderException extends RuntimeException {
     public OrderException(String errorMessage) {
         super(errorMessage);
     }
