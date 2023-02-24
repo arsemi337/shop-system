@@ -8,7 +8,8 @@ import pl.sii.shopsystem.customer.service.CustomerValidator;
 import pl.sii.shopsystem.customer.dto.CustomerInputDto;
 import pl.sii.shopsystem.customer.dto.CustomerEmailInputDto;
 
-import static pl.sii.shopsystem.customer.exception.CustomerExceptionMessages.*;
+import static exception.CustomerExceptionMessages.*;
+
 
 @Component
 class CustomerValidatorImpl implements CustomerValidator {

@@ -24,8 +24,8 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.UUID;
 
-import static pl.sii.shopsystem.customer.exception.CustomerExceptionMessages.NO_CUSTOMER_BY_EMAIL_FOUND;
-import static pl.sii.shopsystem.order.exception.OrderExceptionMessages.PRODUCT_NOT_FOUND;
+import static exception.CustomerExceptionMessages.NO_CUSTOMER_BY_EMAIL_FOUND;
+import static exception.OrderExceptionMessages.PRODUCT_NOT_FOUND;
 
 @Service
 public class OrderServiceImpl implements OrderService {

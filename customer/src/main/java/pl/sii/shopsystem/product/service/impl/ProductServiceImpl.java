@@ -10,7 +10,8 @@ import pl.sii.shopsystem.product.service.ProductService;
 import java.util.NoSuchElementException;
 import java.util.UUID;
 
-import static pl.sii.shopsystem.product.exception.ProductExceptionMessages.NO_PRODUCT_FOUND;
+import static exception.ProductExceptionMessages.NO_PRODUCT_FOUND;
+
 
 @Service
 public class ProductServiceImpl implements ProductService {

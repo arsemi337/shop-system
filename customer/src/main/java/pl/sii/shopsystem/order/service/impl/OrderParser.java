@@ -1,6 +1,6 @@
 package pl.sii.shopsystem.order.service.impl;
 
-import static pl.sii.shopsystem.order.exception.OrderExceptionMessages.PRODUCT_QUANTITY_IS_NOT_NUMBER;
+import static exception.OrderExceptionMessages.PRODUCT_QUANTITY_IS_NOT_NUMBER;
 
 public class OrderParser {
 

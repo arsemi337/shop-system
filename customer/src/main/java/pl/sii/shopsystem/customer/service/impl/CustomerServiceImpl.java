@@ -14,8 +14,8 @@ import supplier.TimeSupplier;
 import java.util.NoSuchElementException;
 import java.util.UUID;
 
-import static pl.sii.shopsystem.customer.exception.CustomerExceptionMessages.NO_CUSTOMER_BY_EMAIL_FOUND;
-import static pl.sii.shopsystem.customer.exception.CustomerExceptionMessages.NO_CUSTOMER_BY_ID_FOUND;
+import static exception.CustomerExceptionMessages.NO_CUSTOMER_BY_EMAIL_FOUND;
+import static exception.CustomerExceptionMessages.NO_CUSTOMER_BY_ID_FOUND;
 
 @Service
 public class CustomerServiceImpl implements CustomerService {

@@ -6,8 +6,8 @@ import pl.sii.shopsystem.order.dto.OrderInputDto;
 import pl.sii.shopsystem.order.orderProduct.dto.OrderProductInputDto;
 import pl.sii.shopsystem.order.service.OrderValidator;
 
-import static pl.sii.shopsystem.customer.exception.CustomerExceptionMessages.INPUT_DATA_CONTAINS_BLANK_FIELDS;
-import static pl.sii.shopsystem.order.exception.OrderExceptionMessages.PRODUCT_QUANTITY_LOWER_OR_EQUAL_ZERO;
+import static exception.CustomerExceptionMessages.INPUT_DATA_CONTAINS_BLANK_FIELDS;
+import static exception.OrderExceptionMessages.PRODUCT_QUANTITY_LOWER_OR_EQUAL_ZERO;
 
 @Component
 public class OrderValidatorImpl implements OrderValidator {

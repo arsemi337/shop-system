@@ -1,4 +1,4 @@
-package pl.sii.shopsystem.customer.exception;
+package exception;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
