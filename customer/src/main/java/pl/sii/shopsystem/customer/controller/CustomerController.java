@@ -20,9 +20,9 @@ public class CustomerController {
         return ResponseEntity.ok(customerService.addCustomer(customerInputDto));
     }
 
-    @GetMapping
-    ResponseEntity<CustomerOutputDto> getCustomer(@RequestBody CustomerEmailInputDto customerEmailInputDto) {
-        return ResponseEntity.ok(customerService.getCustomer(customerEmailInputDto));
+    @GetMapping("/{id}")
+    ResponseEntity<CustomerOutputDto> getCustomer(@PathVariable String id) {
+        return ResponseEntity.ok(customerService.getCustomer(id));
     }
 
     @DeleteMapping

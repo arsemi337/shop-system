@@ -66,16 +66,12 @@ public class CustomerIntegrationTest {
     @DisplayName("Fetching customer happy path")
     void fetchingCustomerHappyPath() {
         assertThat(customerRepository.findAll()).isEmpty();
-        addCustomerToDatabase();
+        Customer customer = addCustomerToDatabase();
         assertThat(customerRepository.findAll()).hasSize(1);
 
-        given().accept(JSON).body("""
-                        {
-                            "email": "jdoe@sii.pl"
-                        }
-                        """)
-                .contentType(JSON)
-                .when().get("/api/v1/customer")
+        given()
+                .pathParams("id", customer.getId())
+                .when().get("/api/v1/customer/{id}")
                 .then().statusCode(HttpStatus.SC_OK)
                 .body("firstname", equalTo("John"))
                 .body("lastname", equalTo("Doe"))

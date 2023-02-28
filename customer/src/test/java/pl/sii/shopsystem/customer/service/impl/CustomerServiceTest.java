@@ -66,42 +66,36 @@ public class CustomerServiceTest {
         // given
         String email = "jdoe@sii.pl";
         UUID uuid = UUID.randomUUID();
-        CustomerEmailInputDto input = CustomerEmailInputDto.builder()
-                .email(email)
-                .build();
         Customer customer = Customer.builder()
                 .id(uuid)
                 .firstname("John")
                 .lastname("Doe")
                 .email(email)
                 .build();
-        when(customerRepository.findByEmail(input.email())).thenReturn(Optional.of(customer));
+        when(customerRepository.findById(uuid)).thenReturn(Optional.of(customer));
 
         // when
-        CustomerOutputDto customerOutput = underTest.getCustomer(input);
+        CustomerOutputDto customerOutput = underTest.getCustomer(uuid.toString());
 
         // then
         assertEquals(customerOutput.id(), uuid);
         assertEquals(customerOutput.firstname(), customer.getFirstname());
         assertEquals(customerOutput.lastname(), customer.getLastname());
         assertEquals(customerOutput.email(), customer.getEmail());
-        verify(customerRepository).findByEmail(email);
+        verify(customerRepository).findById(uuid);
     }
 
     @Test
     @DisplayName("when an email of non existing customer is passed, a NoSuchElementException exception should be thrown")
     void getCustomer_should_throwNoSuchElementException_when_emailOfNonExistingCustomerIsPassed() {
         // given
-        String email = "jdoe@sii.pl";
-        CustomerEmailInputDto input = CustomerEmailInputDto.builder()
-                .email(email)
-                .build();
-        when(customerRepository.findByEmail(input.email())).thenReturn(Optional.empty());
+        UUID uuid = UUID.randomUUID();
+        when(customerRepository.findById(uuid)).thenReturn(Optional.empty());
 
         // then
         assertThatExceptionOfType(NoSuchElementException.class)
-                .isThrownBy(() -> underTest.getCustomer(input)).withMessage(NO_CUSTOMER_BY_EMAIL_FOUND.getMessage());
-        verify(customerRepository).findByEmail(email);
+                .isThrownBy(() -> underTest.getCustomer(uuid.toString())).withMessage(NO_CUSTOMER_BY_EMAIL_FOUND.getMessage());
+        verify(customerRepository).findById(uuid);
         verify(customerRepository, never()).save(any(Customer.class));
     }
 

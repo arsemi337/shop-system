@@ -5,7 +5,7 @@ import pl.sii.shopsystem.customer.dto.*;
 public interface CustomerService {
     CustomerOutputDto addCustomer(CustomerInputDto customerInputDto);
 
-    CustomerOutputDto getCustomer(CustomerEmailInputDto customerEmailInputDto);
+    CustomerOutputDto getCustomer(String id);
 
     void removeCustomer(CustomerEmailInputDto customerEmailInputDto);
 

@@ -16,6 +16,7 @@ Having the database run, the Spring Boot application in *customer* directory can
 ```
 
 After running, the application is available at *localhost:8080* and exposes its services through REST API endpoints. 
+The REST API can be also accessed through the Swagger UI tool, available at *localhost:8080/*
 They are divided into three groups of resources: Customer, Product, Purchase. These endpoints are: 
 
 ### Customer
@@ -44,13 +45,7 @@ They are divided into three groups of resources: Customer, Product, Purchase. Th
 
 * GET **/api/v1/customer** - fetches a customer's account
 
-#### Request body
-
-```json
-{
-  "email": "newEmail@newEmail.com"
-}
-```
+Customer ID is passed to the service as a path variable. The ID needs to have a UUID form. 
 
 #### Response body
 
