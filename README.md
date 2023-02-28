@@ -9,7 +9,7 @@ The following command defines such a container:
 docker run --name postgresql -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -p 5432:5432 -d postgres
 ```
 
-Having the database run, the Spring Boot application can be started with the use of IntelliJ or the following command:
+Having the database run, the Spring Boot application in *customer* directory can be started with the use of IntelliJ or the following command:
 
 ```
 ./mvnw spring-boot:run
@@ -79,9 +79,10 @@ They are divided into three groups of resources: Customer, Product, Purchase. Th
 
 ```json
 {
-  "firstname": "John",
-  "lastname": "Doe",
-  "email": "newEmail@newEmail.com"
+  "id": "83cb721b-e18c-4890-8d3d-fa9a8ede8283",
+  "newFirstname": "John",
+  "newLastname": "Doe",
+  "newEmail": "newEmail@newEmail.com"
 }
 ```
 
