@@ -21,14 +21,14 @@ import static exception.CustomerExceptionMessages.NO_CUSTOMER_BY_ID_FOUND;
 public class CustomerServiceImpl implements CustomerService {
 
     private final CustomerValidator validator;
-    private final TimeSupplier timeSupplier;
+    private final CustomerMapper mapper;
     private final CustomerRepository customerRepository;
 
     public CustomerServiceImpl(CustomerValidator validator,
                                TimeSupplier timeSupplier,
                                CustomerRepository customerRepository) {
         this.validator = validator;
-        this.timeSupplier = timeSupplier;
+        this.mapper = new CustomerMapper(timeSupplier);
         this.customerRepository = customerRepository;
     }
 
@@ -38,19 +38,9 @@ public class CustomerServiceImpl implements CustomerService {
         validator.validateCustomerExistence(customerInputDto.email());
 
         Customer customer = customerRepository.save(
-                Customer.builder()
-                        .creationTime(timeSupplier.get())
-                        .firstname(customerInputDto.firstname())
-                        .lastname(customerInputDto.lastname())
-                        .email(customerInputDto.email())
-                        .build());
+                mapper.mapToCustomer(customerInputDto));
 
-        return CustomerOutputDto.builder()
-                .id(customer.getId())
-                .firstname(customer.getFirstname())
-                .lastname(customer.getLastname())
-                .email(customer.getEmail())
-                .build();
+        return mapper.mapToCustomerOutputDto(customer);
     }
 
     @Override
@@ -60,12 +50,7 @@ public class CustomerServiceImpl implements CustomerService {
         Customer customer = customerRepository.findByEmail(customerEmailInputDto.email())
                 .orElseThrow(() -> new NoSuchElementException(NO_CUSTOMER_BY_EMAIL_FOUND.getMessage()));
 
-        return CustomerOutputDto.builder()
-                .id(customer.getId())
-                .firstname(customer.getFirstname())
-                .lastname(customer.getLastname())
-                .email(customer.getEmail())
-                .build();
+        return mapper.mapToCustomerOutputDto(customer);
     }
 
     @Override
@@ -93,11 +78,6 @@ public class CustomerServiceImpl implements CustomerService {
 
         customerRepository.save(customer);
 
-        return CustomerOutputDto.builder()
-                .id(customer.getId())
-                .firstname(customer.getFirstname())
-                .lastname(customer.getLastname())
-                .email(customer.getEmail())
-                .build();
+        return mapper.mapToCustomerOutputDto(customer);
     }
 }
