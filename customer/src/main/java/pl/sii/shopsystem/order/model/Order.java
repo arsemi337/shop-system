@@ -29,7 +29,7 @@ public class Order {
     private LocalDateTime dateTime;
     private BigDecimal cost;
 
-    @OneToMany(mappedBy = "order")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "order")
     Set<OrderProduct> orderProducts;
 
     @Override
