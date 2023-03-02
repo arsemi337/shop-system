@@ -1,4 +1,4 @@
-package pl.sii.shopsystem.order.service.impl;
+package pl.sii.shopsystem.order;
 
 import io.restassured.RestAssured;
 import org.apache.http.HttpStatus;

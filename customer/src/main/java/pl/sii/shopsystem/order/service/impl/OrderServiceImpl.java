@@ -36,8 +36,7 @@ public class OrderServiceImpl implements OrderService {
     private final ProductRepository productRepository;
     private final OrderRepository orderRepository;
     private final OrderProductRepository orderProductRepository;
-    private final TimeSupplier timeSupplier;
-    private final OrderMapper orderMapper;
+    private final OrderMapper mapper;
 
     public OrderServiceImpl(OrderValidator validator,
                             CustomerRepository customerRepository,
@@ -51,8 +50,7 @@ public class OrderServiceImpl implements OrderService {
         this.productRepository = productRepository;
         this.orderRepository = orderRepository;
         this.orderProductRepository = orderProductRepository;
-        this.timeSupplier = timeSupplier;
-        this.orderMapper = new OrderMapper();
+        this.mapper = new OrderMapper(timeSupplier);
     }
 
     @Override
@@ -66,7 +64,7 @@ public class OrderServiceImpl implements OrderService {
                 .orElseThrow(() -> new NoSuchElementException(NO_CUSTOMER_BY_EMAIL_FOUND.getMessage()));
 
         // Create a list of objects, each of which contains a desired product and its quantity
-        List<ProductQuantity> productQuantities = orderMapper.mapToProductQuantities(
+        List<ProductQuantity> productQuantities = mapper.mapToProductQuantities(
                 orderInputDto,
                 this::createProductQuantity);
 
@@ -74,21 +72,16 @@ public class OrderServiceImpl implements OrderService {
         BigDecimal totalCost = calculateTotalCost(productQuantities);
 
         // Create order object and save it in a database
-        Order order = Order.builder()
-                .creationTime(timeSupplier.get())
-                .customer(customer)
-                .cost(totalCost)
-                .dateTime(timeSupplier.get())
-                .build();
+        Order order = mapper.mapToOrder(customer, totalCost);
         orderRepository.save(order);
 
         // Create OrderProduct objects and save them in a database
-        List<OrderProduct> orderProducts = orderMapper.mapToOrderProducts(productQuantities, order);
+        List<OrderProduct> orderProducts = mapper.mapToOrderProducts(productQuantities, order);
         orderProducts.forEach(orderProductRepository::save);
 
-        return orderMapper.mapToOrderOutputDto(
+        return mapper.mapToOrderOutputDto(
                 customer,
-                orderMapper.mapToOrderProductOutputDtoList(productQuantities),
+                mapper.mapToOrderProductOutputDtoList(productQuantities),
                 totalCost);
     }
 

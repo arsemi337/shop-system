@@ -22,7 +22,6 @@ public class Order {
     @Id
     @GeneratedValue
     private UUID id;
-    private LocalDateTime creationTime;
     @ManyToOne
     @JoinColumn(name = "customer_id")
     private Customer customer;

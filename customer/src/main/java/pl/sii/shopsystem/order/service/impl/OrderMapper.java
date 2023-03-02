@@ -9,6 +9,7 @@ import pl.sii.shopsystem.order.orderProduct.dto.OrderProductInputDto;
 import pl.sii.shopsystem.order.orderProduct.dto.OrderProductOutputDto;
 import pl.sii.shopsystem.order.orderProduct.model.OrderProduct;
 import pl.sii.shopsystem.order.orderProduct.model.OrderProductKey;
+import supplier.TimeSupplier;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -16,6 +17,12 @@ import java.util.Optional;
 import java.util.function.Function;
 
 public class OrderMapper {
+
+    private final TimeSupplier timeSupplier;
+
+    public OrderMapper(TimeSupplier timeSupplier) {
+        this.timeSupplier = timeSupplier;
+    }
 
     OrderOutputDto mapToOrderOutputDto(Customer customer, List<OrderProductOutputDto> purchasedProducts, BigDecimal totalCost) {
         return OrderOutputDto.builder()
@@ -64,5 +71,13 @@ public class OrderMapper {
                 .map(mapToOptionalOfProductQuantity)
                 .flatMap(Optional::stream)
                 .toList();
+    }
+
+    Order mapToOrder(Customer customer, BigDecimal totalCost) {
+        return Order.builder()
+                .customer(customer)
+                .cost(totalCost)
+                .dateTime(timeSupplier.get())
+                .build();
     }
 }
