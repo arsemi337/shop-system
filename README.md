@@ -2,11 +2,15 @@
 
 Simple Spring Boot system for shopping services. 
 
-To run the application, a docker container with PostgreSQL database needs to be started. 
-The following command defines such a container: 
+To run the application, two docker containers with PostgreSQL database need to be started. 
+The following commands defines those containers: 
 
 ```
-docker run --name postgresql -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -p 5432:5432 -d postgres
+docker run --name customerPostgreSQL -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -p 5432:5432 -d postgres
+```
+
+```
+docker run --name productPostgreSQL -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -p 5431:5432 -d postgres
 ```
 
 Having the database run, the Spring Boot application in *customer* directory can be started with the use of IntelliJ or the following command:
