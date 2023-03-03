@@ -7,7 +7,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import pl.sii.shopsystem.customer.model.Customer;
-import pl.sii.shopsystem.customer.service.impl.ProductQuantity;
 import pl.sii.shopsystem.order.dto.OrderOutputDto;
 import pl.sii.shopsystem.order.model.Order;
 import pl.sii.shopsystem.order.orderProduct.dto.OrderProductOutputDto;

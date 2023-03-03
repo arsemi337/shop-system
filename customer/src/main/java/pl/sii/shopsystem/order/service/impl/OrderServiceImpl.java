@@ -4,7 +4,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pl.sii.shopsystem.customer.model.Customer;
 import pl.sii.shopsystem.customer.repository.CustomerRepository;
-import pl.sii.shopsystem.customer.service.impl.ProductQuantity;
 import pl.sii.shopsystem.order.dto.OrderInputDto;
 import pl.sii.shopsystem.order.dto.OrderOutputDto;
 import pl.sii.shopsystem.order.model.Order;

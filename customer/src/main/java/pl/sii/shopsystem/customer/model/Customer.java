@@ -14,7 +14,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@SQLDelete(sql = "UPDATE Customers SET is_deleted = true WHERE id=?")
+@SQLDelete(sql = "UPDATE customers SET is_deleted = true WHERE id=?")
 @Where(clause = "is_deleted=false")
 @Table(name = "customers")
 public class Customer {

@@ -6,6 +6,9 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public enum ProductExceptionMessages {
-    NO_PRODUCT_FOUND("No product with entered ID found");
+    NO_PRODUCT_FOUND("No product with entered ID found"),
+    PRICE_NOT_A_NUMBER("Entered product price is not a number: "),
+    PRICE_IS_NON_POSITIVE("Entered product price is a non positive number: "),
+    PRODUCT_ALREADY_EXISTS("Product with entered title already exists: ");
     private final String message;
 }

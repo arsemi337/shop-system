@@ -1,4 +1,4 @@
-package pl.sii.shopsystem.customer.service.impl;
+package pl.sii.shopsystem.order.service.impl;
 
 import lombok.Builder;
 import pl.sii.shopsystem.product.model.Product;

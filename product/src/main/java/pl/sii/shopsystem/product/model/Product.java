@@ -1,11 +1,10 @@
 package pl.sii.shopsystem.product.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.Hibernate;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -18,6 +17,8 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@SQLDelete(sql = "UPDATE products SET is_deleted = true WHERE id=?")
+@Where(clause = "is_deleted=false")
 @Table(name = "products")
 public class Product {
 
@@ -26,9 +27,11 @@ public class Product {
     private UUID id;
     private LocalDateTime creationTime;
     private String type;
+    @Column(unique = true)
     private String title;
     private String manufacturer;
     private BigDecimal price;
+    private boolean isDeleted = Boolean.FALSE;
 
     @Override
     public boolean equals(Object o) {
