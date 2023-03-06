@@ -2,6 +2,7 @@ package pl.sii.shopsystem.product.service.impl;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import pl.sii.shopsystem.product.dto.ProductInputDto;
 import pl.sii.shopsystem.product.dto.ProductOutputDto;
@@ -21,12 +22,16 @@ import static exception.ProductExceptionMessages.NO_PRODUCT_FOUND;
 @Service
 public class ProductServiceImpl implements ProductService {
 
+    private final KafkaTemplate<String, String> kafkaTemplate;
     private final ProductValidator validator;
     private final ProductRepository productRepository;
     private final ProductMapper productMapper;
 
-    ProductServiceImpl(ProductValidator validator,
-                       TimeSupplier timeSupplier, ProductRepository productRepository) {
+    ProductServiceImpl(KafkaTemplate<String, String> kafkaTemplate,
+                       ProductValidator validator,
+                       TimeSupplier timeSupplier,
+                       ProductRepository productRepository) {
+        this.kafkaTemplate = kafkaTemplate;
         this.validator = validator;
         this.productRepository = productRepository;
         this.productMapper = new ProductMapper(timeSupplier);
@@ -36,6 +41,8 @@ public class ProductServiceImpl implements ProductService {
     public List<ProductOutputDto> addProducts(List<ProductInputDto> productInputDtoList) {
         productInputDtoList.forEach(validator::validateProductInputDto);
         productInputDtoList.forEach(validator::validateProductExistence);
+
+        kafkaTemplate.send("shop", productInputDtoList.get(0).title());
 
         return productInputDtoList.stream()
                 .map(productMapper::mapToProduct)
@@ -66,6 +73,7 @@ public class ProductServiceImpl implements ProductService {
         Product product = productRepository.findById(productUuid)
                 .orElseThrow(() -> new NoSuchElementException(NO_PRODUCT_FOUND.getMessage()));
 
+        validator.validateProductTitleChange(product.getTitle(), productInputDto.title());
         product.setTitle(productInputDto.title());
         product.setType(productInputDto.type());
         product.setManufacturer(productInputDto.manufacturer());
