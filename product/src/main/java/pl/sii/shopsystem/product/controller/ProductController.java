@@ -39,7 +39,7 @@ public class ProductController {
     @PutMapping("/{productId}")
     ResponseEntity<ProductOutputDto> updateProduct(@PathVariable String productId,
                                                    @RequestBody ProductInputDto productInputDto) {
-        return ResponseEntity.ok(productService.updateProduct(productInputDto));
+        return ResponseEntity.ok(productService.updateProduct(productId, productInputDto));
     }
 
     @DeleteMapping("/{productId}")

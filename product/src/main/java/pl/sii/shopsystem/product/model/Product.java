@@ -27,7 +27,6 @@ public class Product {
     private UUID id;
     private LocalDateTime creationTime;
     private String type;
-    @Column(unique = true)
     private String title;
     private String manufacturer;
     private BigDecimal price;

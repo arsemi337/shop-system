@@ -11,6 +11,7 @@ import pl.sii.shopsystem.product.service.ProductService;
 import pl.sii.shopsystem.product.service.ProductValidator;
 import supplier.TimeSupplier;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.UUID;
@@ -34,6 +35,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public List<ProductOutputDto> addProducts(List<ProductInputDto> productInputDtoList) {
         productInputDtoList.forEach(validator::validateProductInputDto);
+        productInputDtoList.forEach(validator::validateProductExistence);
 
         return productInputDtoList.stream()
                 .map(productMapper::mapToProduct)
@@ -49,23 +51,36 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ProductOutputDto fetchProductById(String id) {
-        UUID productId = UUID.fromString(id);
-        return productRepository.findById(productId)
+    public ProductOutputDto fetchProductById(String productId) {
+        UUID productUuid = UUID.fromString(productId);
+        return productRepository.findById(productUuid)
                 .map(productMapper::mapToProductOutputDto)
                 .orElseThrow(() -> new NoSuchElementException(NO_PRODUCT_FOUND.getMessage()));
     }
 
     @Override
-    public ProductOutputDto updateProduct(ProductInputDto productInputDto) {
-        return null;
+    public ProductOutputDto updateProduct(String productId, ProductInputDto productInputDto) {
+        validator.validateProductInputDto(productInputDto);
+
+        UUID productUuid = UUID.fromString(productId);
+        Product product = productRepository.findById(productUuid)
+                .orElseThrow(() -> new NoSuchElementException(NO_PRODUCT_FOUND.getMessage()));
+
+        product.setTitle(productInputDto.title());
+        product.setType(productInputDto.type());
+        product.setManufacturer(productInputDto.manufacturer());
+        product.setPrice(new BigDecimal(productInputDto.price()));
+
+        productRepository.save(product);
+
+        return productMapper.mapToProductOutputDto(product);
     }
 
     @Override
     public void removeProduct(String productId) {
         UUID productUuid = UUID.fromString(productId);
-        if (productRepository.existsById(productUuid)) {
-            productRepository.findById(productUuid);
-        }
+        Product product = productRepository.findById(productUuid)
+                .orElseThrow(() -> new NoSuchElementException(NO_PRODUCT_FOUND.getMessage()));
+        productRepository.deleteById(product.getId());
     }
 }

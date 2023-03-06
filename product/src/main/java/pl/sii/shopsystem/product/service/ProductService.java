@@ -12,6 +12,6 @@ public interface ProductService {
     List<ProductOutputDto> addProducts(List<ProductInputDto> productInputDtoList);
     Page<ProductOutputDto> fetchAllProducts(Pageable pageable);
     ProductOutputDto fetchProductById(String id);
-    ProductOutputDto updateProduct(ProductInputDto productInputDto);
+    ProductOutputDto updateProduct(String productId, ProductInputDto productInputDto);
     void removeProduct(String productId);
 }

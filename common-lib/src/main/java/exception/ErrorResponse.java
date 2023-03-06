@@ -1,4 +1,4 @@
-package pl.sii.shopsystem.exception;
+package exception;
 
 import lombok.Builder;
 

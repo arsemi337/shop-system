@@ -7,5 +7,8 @@ CREATE TABLE products (
    title VARCHAR(255),
    manufacturer VARCHAR(255),
    price DECIMAL,
+   is_deleted BOOLEAN NOT NULL,
    CONSTRAINT pk_products PRIMARY KEY (id)
 );
+
+ALTER TABLE products ADD CONSTRAINT uc_products_title UNIQUE (title);

@@ -26,7 +26,23 @@ public class ProductValidatorImpl implements ProductValidator {
             throw new IllegalArgumentException(INPUT_DATA_CONTAINS_BLANK_FIELDS.getMessage());
         }
         validatePrice(productInputDto.price());
-        validateProductExistence(productInputDto.title());
+    }
+
+    @Override
+    public void validateProductExistence(ProductInputDto productInputDto) {
+        if (productRepository.existsByTitle(productInputDto.title())) {
+            throw new IllegalArgumentException(PRODUCT_ALREADY_EXISTS.getMessage() + productInputDto.title());
+        }
+    }
+
+    @Override
+    public void validateProductTitleChange(String oldTitle, String newTitle) {
+        if (oldTitle.equals(newTitle)) {
+            return;
+        }
+        if (productRepository.existsByTitle(newTitle)) {
+            throw new IllegalArgumentException(PRODUCT_ALREADY_EXISTS.getMessage());
+        }
     }
 
     private boolean isAnyBlank(ProductInputDto productInputDto) {
@@ -45,12 +61,6 @@ public class ProductValidatorImpl implements ProductValidator {
             }
         } catch (NumberFormatException e) {
             throw new NumberFormatException(PRICE_NOT_A_NUMBER.getMessage() + stringPrice);
-        }
-    }
-
-    private void validateProductExistence(String productTitle) {
-        if (productRepository.existsByTitle(productTitle)) {
-            throw new IllegalArgumentException(PRODUCT_ALREADY_EXISTS.getMessage() + productTitle);
         }
     }
 }
