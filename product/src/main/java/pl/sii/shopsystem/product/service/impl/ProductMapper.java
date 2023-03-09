@@ -1,6 +1,6 @@
 package pl.sii.shopsystem.product.service.impl;
 
-import dto.ProductDto;
+import kafka.dto.ProductDto;
 import pl.sii.shopsystem.product.dto.ProductInputDto;
 import pl.sii.shopsystem.product.dto.ProductOutputDto;
 import pl.sii.shopsystem.product.model.Product;

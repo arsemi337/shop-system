@@ -1,6 +1,8 @@
 package pl.sii.shopsystem.product.service.impl;
 
-import dto.ProductDto;
+import kafka.ProductHeader;
+import kafka.dto.ProductDto;
+import org.apache.kafka.clients.producer.ProducerRecord;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -15,6 +17,7 @@ import pl.sii.shopsystem.product.service.ProductValidator;
 import supplier.TimeSupplier;
 
 import java.math.BigDecimal;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.UUID;
@@ -50,7 +53,12 @@ public class ProductServiceImpl implements ProductService {
                 .map(productRepository::save).
                 toList();
 
-        products.forEach(product -> kafkaTemplate.send("product", productMapper.mapToProductDto(product)));
+        products.forEach(product -> {
+            ProductDto dto = productMapper.mapToProductDto(product);
+            var producerRecord = new ProducerRecord<String, ProductDto>("product", dto);
+            producerRecord.headers().add("EVENT_TYPE", ProductHeader.PRODUCT_CREATED.name().getBytes(StandardCharsets.UTF_8));
+            kafkaTemplate.send(producerRecord);
+        });
 
 //        List<ProductDto> productDtoList = products.stream()
 //                .map(productMapper::mapToProductDto)

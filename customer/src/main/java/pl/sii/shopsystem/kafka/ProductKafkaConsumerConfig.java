@@ -1,6 +1,6 @@
 package pl.sii.shopsystem.kafka;
 
-import dto.ProductDto;
+import kafka.dto.ProductDto;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;

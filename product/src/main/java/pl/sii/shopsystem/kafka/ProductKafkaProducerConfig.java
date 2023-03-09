@@ -1,6 +1,6 @@
 package pl.sii.shopsystem.kafka;
 
-import dto.ProductDto;
+import kafka.dto.ProductDto;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.beans.factory.annotation.Value;
