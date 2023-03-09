@@ -1,13 +1,10 @@
 package pl.sii.shopsystem.product.service.impl;
 
-import kafka.ProductHeader;
-import kafka.dto.ProductDto;
-import org.apache.kafka.clients.producer.ProducerRecord;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import pl.sii.shopsystem.kafka.service.KafkaService;
 import pl.sii.shopsystem.product.dto.ProductInputDto;
 import pl.sii.shopsystem.product.dto.ProductOutputDto;
 import pl.sii.shopsystem.product.model.Product;
@@ -17,29 +14,29 @@ import pl.sii.shopsystem.product.service.ProductValidator;
 import supplier.TimeSupplier;
 
 import java.math.BigDecimal;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.UUID;
 
 import static exception.ProductExceptionMessages.NO_PRODUCT_FOUND;
+import static kafka.ProductHeader.*;
 
 @Service
 public class ProductServiceImpl implements ProductService {
 
-    private final KafkaTemplate<String, ProductDto> kafkaTemplate;
     private final ProductValidator validator;
     private final ProductRepository productRepository;
     private final ProductMapper productMapper;
+    private final KafkaService kafkaService;
 
-    ProductServiceImpl(KafkaTemplate<String, ProductDto> kafkaTemplate,
-                       ProductValidator validator,
+    ProductServiceImpl(ProductValidator validator,
                        TimeSupplier timeSupplier,
-                       ProductRepository productRepository) {
-        this.kafkaTemplate = kafkaTemplate;
+                       ProductRepository productRepository,
+                       KafkaService kafkaService) {
         this.validator = validator;
         this.productRepository = productRepository;
         this.productMapper = new ProductMapper(timeSupplier);
+        this.kafkaService = kafkaService;
     }
 
     @Override
@@ -53,18 +50,7 @@ public class ProductServiceImpl implements ProductService {
                 .map(productRepository::save).
                 toList();
 
-        products.forEach(product -> {
-            ProductDto dto = productMapper.mapToProductDto(product);
-            var producerRecord = new ProducerRecord<String, ProductDto>("product", dto);
-            producerRecord.headers().add("EVENT_TYPE", ProductHeader.PRODUCT_CREATED.name().getBytes(StandardCharsets.UTF_8));
-            kafkaTemplate.send(producerRecord);
-        });
-
-//        List<ProductDto> productDtoList = products.stream()
-//                .map(productMapper::mapToProductDto)
-//                .toList();
-
-//        kafkaTemplate.send("product", productInputDtoList.get(0).title());
+        products.forEach(product -> kafkaService.sendProductToTopic(product, PRODUCT_CREATED.name()));
 
         return products.stream()
                 .map(productMapper::mapToProductOutputDto)
@@ -86,6 +72,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    @Transactional
     public ProductOutputDto updateProduct(String productId, ProductInputDto productInputDto) {
         validator.validateProductInputDto(productInputDto);
 
@@ -100,15 +87,18 @@ public class ProductServiceImpl implements ProductService {
         product.setPrice(new BigDecimal(productInputDto.price()));
 
         productRepository.save(product);
+        kafkaService.sendProductToTopic(product, PRODUCT_MODIFIED.name());
 
         return productMapper.mapToProductOutputDto(product);
     }
 
     @Override
+    @Transactional
     public void removeProduct(String productId) {
         UUID productUuid = UUID.fromString(productId);
         Product product = productRepository.findById(productUuid)
                 .orElseThrow(() -> new NoSuchElementException(NO_PRODUCT_FOUND.getMessage()));
+        kafkaService.sendProductToTopic(product, PRODUCT_REMOVED.name());
         productRepository.deleteById(product.getId());
     }
 }
