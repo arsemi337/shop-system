@@ -1,5 +1,6 @@
 package pl.sii.shopsystem.product.service.impl;
 
+import kafka.dto.ProductDto;
 import pl.sii.shopsystem.product.dto.ProductOutputDto;
 import pl.sii.shopsystem.product.model.Product;
 
@@ -12,6 +13,18 @@ class ProductMapper {
                 .title(product.getTitle())
                 .manufacturer(product.getManufacturer())
                 .price(product.getPrice())
+                .build();
+    }
+
+    public Product mapToProduct(ProductDto productDto) {
+        return Product.builder()
+                .id(productDto.id())
+                .creationTime(productDto.creationTime())
+                .title(productDto.title())
+                .type(productDto.type())
+                .manufacturer(productDto.manufacturer())
+                .price(productDto.price())
+                .isDeleted(productDto.isDeleted())
                 .build();
     }
 }

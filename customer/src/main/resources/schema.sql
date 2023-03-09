@@ -27,10 +27,11 @@ ALTER TABLE orders ADD CONSTRAINT FK_ORDERS_ON_CUSTOMER FOREIGN KEY (customer_id
 CREATE TABLE products (
   id UUID NOT NULL,
    creation_time TIMESTAMP WITHOUT TIME ZONE,
-   type VARCHAR(255),
    title VARCHAR(255),
+   type VARCHAR(255),
    manufacturer VARCHAR(255),
    price DECIMAL,
+   is_deleted BOOLEAN NOT NULL,
    CONSTRAINT pk_products PRIMARY KEY (id)
 );
 

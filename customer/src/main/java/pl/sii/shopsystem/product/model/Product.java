@@ -21,13 +21,13 @@ import java.util.UUID;
 public class Product {
 
     @Id
-    @GeneratedValue
     private UUID id;
     private LocalDateTime creationTime;
-    private String type;
     private String title;
+    private String type;
     private String manufacturer;
     private BigDecimal price;
+    private boolean isDeleted = Boolean.FALSE;
 
     @OneToMany(mappedBy = "product")
     Set<OrderProduct> orderProducts;

@@ -1,5 +1,6 @@
 package pl.sii.shopsystem.product.service.impl;
 
+import kafka.dto.ProductDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -11,7 +12,6 @@ import java.util.NoSuchElementException;
 import java.util.UUID;
 
 import static exception.ProductExceptionMessages.NO_PRODUCT_FOUND;
-
 
 @Service
 public class ProductServiceImpl implements ProductService {
@@ -36,5 +36,23 @@ public class ProductServiceImpl implements ProductService {
         return productRepository.findById(productId)
                 .map(productMapper::mapToProductOutputDto)
                 .orElseThrow(() -> new NoSuchElementException(NO_PRODUCT_FOUND.getMessage()));
+    }
+
+    @Override
+    public void saveProduct(ProductDto productDto) {
+        productRepository.save(
+                productMapper.mapToProduct(productDto));
+    }
+
+    @Override
+    public void updateProduct(ProductDto productDto) {
+        productRepository.save(
+                productMapper.mapToProduct(productDto));
+    }
+
+    @Override
+    public void removeProduct(ProductDto productDto) {
+        productRepository.save(
+                productMapper.mapToProduct(productDto));
     }
 }
