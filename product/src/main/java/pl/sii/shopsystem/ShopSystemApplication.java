@@ -13,11 +13,4 @@ public class ShopSystemApplication {
 		SpringApplication.run(ShopSystemApplication.class, args);
 	}
 
-	@Bean
-	CommandLineRunner commandLineRunner(KafkaTemplate<String, String> kafkaTemplate) {
-		return args -> {
-			kafkaTemplate.send("shop", "hello kafka");
-		};
-	}
-
 }

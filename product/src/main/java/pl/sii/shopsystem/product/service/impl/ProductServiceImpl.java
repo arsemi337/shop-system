@@ -1,9 +1,11 @@
 package pl.sii.shopsystem.product.service.impl;
 
+import dto.ProductDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import pl.sii.shopsystem.product.dto.ProductInputDto;
 import pl.sii.shopsystem.product.dto.ProductOutputDto;
 import pl.sii.shopsystem.product.model.Product;
@@ -22,12 +24,12 @@ import static exception.ProductExceptionMessages.NO_PRODUCT_FOUND;
 @Service
 public class ProductServiceImpl implements ProductService {
 
-    private final KafkaTemplate<String, String> kafkaTemplate;
+    private final KafkaTemplate<String, ProductDto> kafkaTemplate;
     private final ProductValidator validator;
     private final ProductRepository productRepository;
     private final ProductMapper productMapper;
 
-    ProductServiceImpl(KafkaTemplate<String, String> kafkaTemplate,
+    ProductServiceImpl(KafkaTemplate<String, ProductDto> kafkaTemplate,
                        ProductValidator validator,
                        TimeSupplier timeSupplier,
                        ProductRepository productRepository) {
@@ -38,15 +40,25 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    @Transactional
     public List<ProductOutputDto> addProducts(List<ProductInputDto> productInputDtoList) {
         productInputDtoList.forEach(validator::validateProductInputDto);
         productInputDtoList.forEach(validator::validateProductExistence);
 
-        kafkaTemplate.send("shop", productInputDtoList.get(0).title());
-
-        return productInputDtoList.stream()
+        List<Product> products = productInputDtoList.stream()
                 .map(productMapper::mapToProduct)
-                .map(productRepository::save)
+                .map(productRepository::save).
+                toList();
+
+        products.forEach(product -> kafkaTemplate.send("product", productMapper.mapToProductDto(product)));
+
+//        List<ProductDto> productDtoList = products.stream()
+//                .map(productMapper::mapToProductDto)
+//                .toList();
+
+//        kafkaTemplate.send("product", productInputDtoList.get(0).title());
+
+        return products.stream()
                 .map(productMapper::mapToProductOutputDto)
                 .toList();
     }
