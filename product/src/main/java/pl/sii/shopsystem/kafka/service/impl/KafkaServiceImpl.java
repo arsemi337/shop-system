@@ -35,10 +35,10 @@ public class KafkaServiceImpl implements KafkaService {
         producerRecord.headers().add("EVENT_TYPE", messageHeader.getBytes(StandardCharsets.UTF_8));
 
         var future = kafkaTemplate.send(producerRecord);
-        future.whenComplete(whenCompleteFunction(product));
+        future.whenComplete(whenCompleteFunction());
     }
 
-    private static BiConsumer<SendResult<String, ProductDto>, Throwable> whenCompleteFunction(Product product) {
+    private BiConsumer<SendResult<String, ProductDto>, Throwable> whenCompleteFunction() {
         return (result, ex) -> {
             if (ex == null) {
                 System.out.println(result.getProducerRecord().value().title() +
