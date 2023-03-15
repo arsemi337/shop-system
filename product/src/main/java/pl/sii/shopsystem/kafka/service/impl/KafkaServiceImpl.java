@@ -8,15 +8,20 @@ import org.springframework.stereotype.Service;
 import pl.sii.shopsystem.kafka.KafkaTopicConfig;
 import pl.sii.shopsystem.kafka.service.KafkaService;
 import pl.sii.shopsystem.product.model.Product;
+import org.apache.log4j.Logger;
+import org.apache.log4j.LogManager;
 
 import java.nio.charset.StandardCharsets;
 import java.util.function.BiConsumer;
 
+//@Slf4j
 @Service
 public class KafkaServiceImpl implements KafkaService {
     private final KafkaTemplate<String, ProductDto> kafkaTemplate;
     private final KafkaTopicConfig topicConfig;
     private final KafkaProductMapper productMapper;
+
+    Logger log = LogManager.getLogger(KafkaServiceImpl.class);
 
     public KafkaServiceImpl(KafkaTemplate<String, ProductDto> kafkaTemplate,
                             KafkaTopicConfig topicConfig) {
@@ -41,12 +46,12 @@ public class KafkaServiceImpl implements KafkaService {
     private BiConsumer<SendResult<String, ProductDto>, Throwable> whenCompleteFunction() {
         return (result, ex) -> {
             if (ex == null) {
-                System.out.println(result.getProducerRecord().value().title() +
+                log.info(result.getProducerRecord().value().title() +
                         " product has been sent to the " +
                         result.getProducerRecord().topic() +
                         " topic successfully");
             } else {
-                System.out.println(ex.getMessage());
+                log.info(ex.getMessage());
             }
         };
     }
