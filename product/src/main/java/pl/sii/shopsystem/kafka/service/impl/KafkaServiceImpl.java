@@ -1,27 +1,25 @@
 package pl.sii.shopsystem.kafka.service.impl;
 
 import kafka.dto.ProductDto;
+import org.slf4j.LoggerFactory;
 import org.apache.kafka.clients.producer.ProducerRecord;
+import org.slf4j.Logger;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Service;
 import pl.sii.shopsystem.kafka.KafkaTopicConfig;
 import pl.sii.shopsystem.kafka.service.KafkaService;
 import pl.sii.shopsystem.product.model.Product;
-import org.apache.log4j.Logger;
-import org.apache.log4j.LogManager;
 
 import java.nio.charset.StandardCharsets;
 import java.util.function.BiConsumer;
 
-//@Slf4j
 @Service
 public class KafkaServiceImpl implements KafkaService {
     private final KafkaTemplate<String, ProductDto> kafkaTemplate;
     private final KafkaTopicConfig topicConfig;
     private final KafkaProductMapper productMapper;
-
-    Logger log = LogManager.getLogger(KafkaServiceImpl.class);
+    private final Logger logger = LoggerFactory.getLogger(KafkaServiceImpl.class);
 
     public KafkaServiceImpl(KafkaTemplate<String, ProductDto> kafkaTemplate,
                             KafkaTopicConfig topicConfig) {
@@ -46,12 +44,12 @@ public class KafkaServiceImpl implements KafkaService {
     private BiConsumer<SendResult<String, ProductDto>, Throwable> whenCompleteFunction() {
         return (result, ex) -> {
             if (ex == null) {
-                log.info(result.getProducerRecord().value().title() +
+                logger.info(result.getProducerRecord().value().title() +
                         " product has been sent to the " +
                         result.getProducerRecord().topic() +
                         " topic successfully");
             } else {
-                log.info(ex.getMessage());
+                logger.info(ex.getMessage());
             }
         };
     }

@@ -2,6 +2,8 @@ package pl.sii.shopsystem.kafka;
 
 import kafka.ProductHeader;
 import kafka.dto.ProductDto;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.Payload;
@@ -12,6 +14,7 @@ import pl.sii.shopsystem.product.service.ProductService;
 public class ProductKafkaListener {
 
     private final ProductService productService;
+    private final Logger logger = LoggerFactory.getLogger(ProductKafkaListener.class);
 
     public ProductKafkaListener(ProductService productService) {
         this.productService = productService;
@@ -27,25 +30,25 @@ public class ProductKafkaListener {
                 case PRODUCT_CREATED -> addProduct(data);
                 case PRODUCT_MODIFIED -> updateProduct(data);
                 case PRODUCT_REMOVED -> removeProduct(data);
-                default -> System.out.println(eventType + " header is not handled by the system");
+                default -> logger.info(eventType + " header is not handled by the system");
             }
         } catch (IllegalArgumentException e) {
-            System.out.println("Message header exception: " + e.getMessage());
+            logger.info("Message header exception: " + e.getMessage());
         }
     }
 
     private void addProduct(ProductDto productDto) {
         productService.saveProduct(productDto);
-        System.out.println("Listener received a product: " + productDto.title() + " with a header: " + ProductHeader.PRODUCT_CREATED);
+        logger.info("Listener received a product: " + productDto.title() + " with a header: " + ProductHeader.PRODUCT_CREATED);
     }
 
     private void updateProduct(ProductDto productDto) {
         productService.updateProduct(productDto);
-        System.out.println("Listener received a product: " + productDto.title() + " with a header: " + ProductHeader.PRODUCT_MODIFIED);
+        logger.info("Listener received a product: " + productDto.title() + " with a header: " + ProductHeader.PRODUCT_MODIFIED);
     }
 
     private void removeProduct(ProductDto productDto) {
         productService.removeProduct(productDto);
-        System.out.println("Listener received a product: " + productDto.title() + " with a header: " + ProductHeader.PRODUCT_REMOVED);
+        logger.info("Listener received a product: " + productDto.title() + " with a header: " + ProductHeader.PRODUCT_REMOVED);
     }
 }

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <import class="ch.qos.logback.core.encoder.LayoutWrappingEncoder"/>
+    <import class="ch.qos.logback.core.ConsoleAppender"/>
+    <import class="ch.qos.logback.core.rolling.RollingFileAppender"/>
+    <import class="logger.LoggerLayout"/>
+    <import class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy"/>
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+
+    <property name="LOGS" value="./logs" />
+    <timestamp key="bySecond" datePattern="yyyyMMdd'T'HHmmss"/>
+
+    <appender name="CONSOLE" class="ConsoleAppender">
+        <encoder>
+            <pattern>${CONSOLE_LOG_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="FILE"
+              class="RollingFileAppender">
+        <file>${LOGS}/product.log</file>
+        <encoder class="LayoutWrappingEncoder">
+            <layout class="LoggerLayout">
+                <pattern>%msg%n</pattern>
+            </layout>
+        </encoder>
+        <rollingPolicy class="SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${LOGS}/archived/%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <maxFileSize>1MB</maxFileSize>
+            <maxHistory>10</maxHistory>
+            <totalSizeCap>100MB</totalSizeCap>
+        </rollingPolicy>
+    </appender>
+
+    <root level="INFO">
+        <appender-ref ref="FILE" />
+        <appender-ref ref="CONSOLE" />
+    </root>
+</configuration>
