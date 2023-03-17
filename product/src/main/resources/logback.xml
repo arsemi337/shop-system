@@ -19,10 +19,8 @@
     <appender name="FILE"
               class="RollingFileAppender">
         <file>${LOGS}/product.log</file>
-        <encoder class="LayoutWrappingEncoder">
-            <layout class="LoggerLayout">
-                <pattern>%msg%n</pattern>
-            </layout>
+        <encoder>
+            <pattern>${CONSOLE_LOG_PATTERN}</pattern>
         </encoder>
         <rollingPolicy class="SizeAndTimeBasedRollingPolicy">
             <fileNamePattern>${LOGS}/archived/%d{yyyy-MM-dd}.%i.log</fileNamePattern>
