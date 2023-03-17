@@ -2,6 +2,7 @@ package pl.sii.shopsystem.kafka;
 
 import kafka.ProductHeader;
 import kafka.dto.ProductDto;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -9,6 +10,8 @@ import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
 import pl.sii.shopsystem.product.service.ProductService;
+
+import java.math.BigDecimal;
 
 @Component
 public class ProductKafkaListener {
@@ -38,17 +41,36 @@ public class ProductKafkaListener {
     }
 
     private void addProduct(ProductDto productDto) {
+        if (isProductDtoValid(productDto)) {
+            logger.warn("Invalid product couldn't be added to the database:\n" + productDto);
+        }
         productService.saveProduct(productDto);
-        logger.info("Listener received a product: " + productDto.title() + " with a header: " + ProductHeader.PRODUCT_CREATED);
+        logger.info("Listener received a product:\n" + productDto + "\nwith a header: " + ProductHeader.PRODUCT_CREATED);
     }
 
     private void updateProduct(ProductDto productDto) {
+        if (isProductDtoValid(productDto)) {
+            logger.warn("Invalid product couldn't be added to the database:\n" + productDto);
+        }
         productService.updateProduct(productDto);
-        logger.info("Listener received a product: " + productDto.title() + " with a header: " + ProductHeader.PRODUCT_MODIFIED);
+        logger.info("Listener received a product:\n" + productDto + "\nwith a header: " + ProductHeader.PRODUCT_MODIFIED);
     }
 
     private void removeProduct(ProductDto productDto) {
+        if (isProductDtoValid(productDto)) {
+            logger.warn("Invalid product couldn't be added to the database:\n" + productDto);
+        }
         productService.removeProduct(productDto);
-        logger.info("Listener received a product: " + productDto.title() + " with a header: " + ProductHeader.PRODUCT_REMOVED);
+        logger.info("Listener received a product:\n" + productDto + "\nwith a header: " + ProductHeader.PRODUCT_REMOVED);
+    }
+
+    private boolean isProductDtoValid(ProductDto productDto) {
+        return productDto.id() == null ||
+                StringUtils.isAnyBlank(
+                        productDto.title(),
+                        productDto.type(),
+                        productDto.manufacturer()) ||
+                productDto.creationTime() == null ||
+                productDto.price().compareTo(BigDecimal.ZERO) < 1;
     }
 }

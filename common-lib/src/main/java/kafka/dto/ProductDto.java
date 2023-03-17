@@ -1,6 +1,7 @@
 package kafka.dto;
 
 import lombok.Builder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -16,4 +17,16 @@ public record ProductDto(
         BigDecimal price,
         boolean isDeleted
 ) {
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this)
+                .append("id", id)
+                .append("title", title)
+                .append("type", type)
+                .append("price", price)
+                .append("creationTime", creationTime)
+                .append("isDeleted", isDeleted)
+                .toString();
+    }
 }
