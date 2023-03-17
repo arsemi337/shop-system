@@ -20,14 +20,15 @@ docker-compose up -d
 ```
 
 The application is composed of four projects. They are present in the main repository directory, the structure of which is:  
-.
-├── customer                          # *Customer* project for creating users and making their orders
-├── product                           # *Product* project for adding, fetching, modifying, and removing products
-├── common-lib                        # *common-lib* library containing classes and services commonly used in other projects
-├── validation-demo                   # *Validation Demo* application used for testing poison pills handling in Kafka consumer service
-├── docker-compose.yaml               # Docker compose file defining Kafka service containers
-├── shop_system.postman_collection    # Postman collection containing exemplary requests, which can be used for testing purposes
-└── README.md
+
+    .
+    ├── customer                          # *Customer* project for creating users and making their orders
+    ├── product                           # *Product* project for adding, fetching, modifying, and removing products
+    ├── common-lib                        # *common-lib* library containing classes and services commonly used in other projects
+    ├── validation-demo                   # *Validation Demo* application used for testing poison pills handling in Kafka consumer service
+    ├── docker-compose.yaml               # Docker compose file defining Kafka service containers
+    ├── shop_system.postman_collection    # Postman collection containing exemplary requests, which can be used for testing purposes
+    └── README.md
 
 Having the database and Kafka run, *Customer*, *Product*, and *ValidationDemo* applications can be started with the use of IntelliJ or the following command: 
 
