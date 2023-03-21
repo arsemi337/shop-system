@@ -1,10 +1,12 @@
 package pl.sii.shopsystem.product.service.impl;
 
+import org.apache.commons.lang3.EnumUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 import pl.sii.shopsystem.product.dto.ProductInputDto;
 import pl.sii.shopsystem.product.repository.ProductRepository;
 import pl.sii.shopsystem.product.service.ProductValidator;
+import product.model.Genre;
 
 import java.math.BigDecimal;
 
@@ -25,6 +27,7 @@ public class ProductValidatorImpl implements ProductValidator {
         if (isAnyBlank(productInputDto)) {
             throw new IllegalArgumentException(INPUT_DATA_CONTAINS_BLANK_FIELDS.getMessage());
         }
+        validateGenre(productInputDto.genre());
         validatePrice(productInputDto.price());
     }
 
@@ -48,9 +51,10 @@ public class ProductValidatorImpl implements ProductValidator {
     private boolean isAnyBlank(ProductInputDto productInputDto) {
         return StringUtils.isAnyBlank(
                 productInputDto.title(),
-                productInputDto.type(),
+                productInputDto.genre(),
                 productInputDto.publishingHouse(),
                 productInputDto.price());
+
     }
 
     private void validatePrice(String stringPrice) {
@@ -61,6 +65,12 @@ public class ProductValidatorImpl implements ProductValidator {
             }
         } catch (NumberFormatException e) {
             throw new NumberFormatException(PRICE_NOT_A_NUMBER.getMessage() + stringPrice);
+        }
+    }
+
+    private void validateGenre(String genre) {
+        if (!EnumUtils.isValidEnum(Genre.class, genre)) {
+            throw new IllegalArgumentException(INVALID_GENRE.getMessage() + genre);
         }
     }
 }

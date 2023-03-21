@@ -12,6 +12,7 @@ import pl.sii.shopsystem.order.model.Order;
 import pl.sii.shopsystem.order.orderProduct.dto.OrderProductOutputDto;
 import pl.sii.shopsystem.order.orderProduct.model.OrderProduct;
 import pl.sii.shopsystem.product.model.Product;
+import product.model.Genre;
 import supplier.TimeSupplier;
 
 import java.math.BigDecimal;
@@ -42,13 +43,14 @@ public class OrderMapperTest {
                 .build();
         List<OrderProductOutputDto> purchasedProducts = new ArrayList<>();
         purchasedProducts.add(OrderProductOutputDto.builder()
-                .title("Pixel 6")
-                .type("Smartphone")
-                .publishingHouse("Google")
-                .price(new BigDecimal("479.99"))
+                .title("Potop")
+                .author("Henryk Sienkiewicz")
+                .genre(Genre.HISTORICAL_FICTION)
+                .publishingHouse("Greg")
+                .price(new BigDecimal("9.99"))
                 .quantity(1)
                 .build());
-        BigDecimal totalCost = new BigDecimal("479.99");
+        BigDecimal totalCost = new BigDecimal("9.99");
 
         // when
         OrderOutputDto orderOutputDto = underTest.mapToOrderOutputDto(customer, purchasedProducts, totalCost);
@@ -70,10 +72,11 @@ public class OrderMapperTest {
         Product product = Product.builder()
                 .id(uuid)
                 .creationTime(timeSupplier.get())
-                .type("Smartphone")
-                .title("Pixel 6")
-                .publishingHouse("Google")
-                .price(new BigDecimal("479.99"))
+                .title("Potop")
+                .author("Henryk Sienkiewicz")
+                .genre(Genre.HISTORICAL_FICTION)
+                .publishingHouse("Greg")
+                .price(new BigDecimal("9.99"))
                 .build();
         List<ProductQuantity> productQuantities = new ArrayList<>();
         productQuantities.add(ProductQuantity.builder()
@@ -109,10 +112,11 @@ public class OrderMapperTest {
         Product product = Product.builder()
                 .id(uuid)
                 .creationTime(timeSupplier.get())
-                .type("Smartphone")
-                .title("Pixel 6")
-                .publishingHouse("Google")
-                .price(new BigDecimal("479.99"))
+                .title("Potop")
+                .author("Henryk Sienkiewicz")
+                .genre(Genre.HISTORICAL_FICTION)
+                .publishingHouse("Greg")
+                .price(new BigDecimal("9.99"))
                 .build();
         List<ProductQuantity> productQuantities = new ArrayList<>();
         productQuantities.add(ProductQuantity.builder()
@@ -125,7 +129,8 @@ public class OrderMapperTest {
 
         // then
         assertEquals(orderProductOutputDtoList.get(0).title(), product.getTitle());
-        assertEquals(orderProductOutputDtoList.get(0).type(), product.getType());
+        assertEquals(orderProductOutputDtoList.get(0).author(), product.getAuthor());
+        assertEquals(orderProductOutputDtoList.get(0).genre(), product.getGenre());
         assertEquals(orderProductOutputDtoList.get(0).publishingHouse(), product.getPublishingHouse());
         assertEquals(orderProductOutputDtoList.get(0).price(), product.getPrice());
         assertEquals(orderProductOutputDtoList.get(0).quantity(), 1);

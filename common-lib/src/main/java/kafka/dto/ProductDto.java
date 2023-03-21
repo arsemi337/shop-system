@@ -2,6 +2,7 @@ package kafka.dto;
 
 import lombok.Builder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
+import product.model.Genre;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -12,7 +13,7 @@ public record ProductDto(
         UUID id,
         LocalDateTime creationTime,
         String title,
-        String type,
+        Genre genre,
         String publishingHouse,
         BigDecimal price,
         boolean isDeleted
@@ -23,7 +24,7 @@ public record ProductDto(
         return new ToStringBuilder(this)
                 .append("id", id)
                 .append("title", title)
-                .append("type", type)
+                .append("type", genre)
                 .append("publishingHouse", publishingHouse)
                 .append("price", price)
                 .append("creationTime", creationTime)

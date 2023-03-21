@@ -2,6 +2,7 @@ package pl.sii.shopsystem.kafka;
 
 import kafka.ProductHeader;
 import kafka.dto.ProductDto;
+import org.apache.commons.lang3.EnumUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,6 +12,7 @@ import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
 import pl.sii.shopsystem.product.service.ProductService;
+import product.model.Genre;
 
 import java.math.BigDecimal;
 
@@ -68,11 +70,11 @@ public class ProductKafkaListener {
 
     private boolean isProductDtoValid(ProductDto productDto) {
         return productDto.id() == null ||
-                StringUtils.isAnyBlank(
+                (StringUtils.isAnyBlank(
                         productDto.title(),
-                        productDto.type(),
                         productDto.publishingHouse()) ||
-                productDto.creationTime() == null ||
-                productDto.price().compareTo(BigDecimal.ZERO) < 1;
+                        productDto.creationTime() == null ||
+                        productDto.price().compareTo(BigDecimal.ZERO) < 1 &&
+                                EnumUtils.isValidEnum(Genre.class, productDto.genre().toString()));
     }
 }

@@ -19,6 +19,7 @@ import pl.sii.shopsystem.order.repository.OrderRepository;
 import pl.sii.shopsystem.order.service.OrderValidator;
 import pl.sii.shopsystem.product.model.Product;
 import pl.sii.shopsystem.product.repository.ProductRepository;
+import product.model.Genre;
 import supplier.TimeSupplier;
 
 import java.math.BigDecimal;
@@ -67,10 +68,11 @@ public class OrderServiceTest {
         Product product = Product.builder()
                 .id(productId)
                 .creationTime(timeSupplier.get())
-                .type("Smartphone")
-                .title("Pixel 6")
-                .publishingHouse("Google")
-                .price(new BigDecimal("479.99"))
+                .title("Potop")
+                .author("Henryk Sienkiewicz")
+                .genre(Genre.HISTORICAL_FICTION)
+                .publishingHouse("Greg")
+                .price(new BigDecimal("9.99"))
                 .build();
         List<OrderProductInputDto> orderProducts = new ArrayList<>();
         orderProducts.add(OrderProductInputDto.builder()
@@ -84,7 +86,8 @@ public class OrderServiceTest {
         List<OrderProductOutputDto> orderProductOutputDtoList = new ArrayList<>();
         orderProductOutputDtoList.add(OrderProductOutputDto.builder()
                 .title(product.getTitle())
-                .type(product.getType())
+                        .author(product.getAuthor())
+                .genre(product.getGenre())
                 .publishingHouse(product.getPublishingHouse())
                 .price(product.getPrice())
                 .quantity(10)

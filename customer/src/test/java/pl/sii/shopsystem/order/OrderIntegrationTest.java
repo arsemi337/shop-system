@@ -16,6 +16,7 @@ import pl.sii.shopsystem.order.orderProduct.model.OrderProduct;
 import pl.sii.shopsystem.order.repository.OrderRepository;
 import pl.sii.shopsystem.product.model.Product;
 import pl.sii.shopsystem.product.repository.ProductRepository;
+import product.model.Genre;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -74,7 +75,8 @@ public class OrderIntegrationTest {
                 .body("customerEmail", equalTo(customer.getEmail()))
                 .body("orderedProducts.size()", equalTo(1))
                 .body("orderedProducts[0].title", equalTo(product.getTitle()))
-                .body("orderedProducts[0].type", equalTo(product.getType()))
+                .body("orderedProducts[0].author", equalTo(product.getAuthor()))
+                .body("orderedProducts[0].genre", equalTo(product.getGenre().toString()))
                 .body("orderedProducts[0].publishingHouse", equalTo(product.getPublishingHouse()))
                 .body("orderedProducts[0].price", equalTo(product.getPrice().floatValue()))
                 .body("orderedProducts[0].quantity", equalTo(quantity))
@@ -106,10 +108,11 @@ public class OrderIntegrationTest {
     private Product addProductToDatabase() {
         Product product = Product.builder()
                 .id(UUID.randomUUID())
-                .title("Pixel 6")
-                .type("Smartphone")
-                .publishingHouse("Google")
-                .price(new BigDecimal("479.99"))
+                .title("Potop")
+                .author("Henryk Sienkiewicz")
+                .genre(Genre.HISTORICAL_FICTION)
+                .publishingHouse("Greg")
+                .price(new BigDecimal("9.99"))
                 .build();
         return productRepository.save(product);
     }

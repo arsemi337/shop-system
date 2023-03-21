@@ -11,6 +11,7 @@ import pl.sii.shopsystem.product.model.Product;
 import pl.sii.shopsystem.product.repository.ProductRepository;
 import pl.sii.shopsystem.product.service.ProductService;
 import pl.sii.shopsystem.product.service.ProductValidator;
+import product.model.Genre;
 import supplier.TimeSupplier;
 
 import java.math.BigDecimal;
@@ -82,7 +83,7 @@ public class ProductServiceImpl implements ProductService {
 
         validator.validateProductTitleChange(product.getTitle(), productInputDto.title());
         product.setTitle(productInputDto.title());
-        product.setType(productInputDto.type());
+        product.setGenre(Genre.valueOf(productInputDto.genre()));
         product.setPublishingHouse(productInputDto.publishingHouse());
         product.setPrice(new BigDecimal(productInputDto.price()));
 

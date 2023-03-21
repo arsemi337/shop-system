@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.Hibernate;
 import pl.sii.shopsystem.order.orderProduct.model.OrderProduct;
+import product.model.Genre;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -24,7 +25,9 @@ public class Product {
     private UUID id;
     private LocalDateTime creationTime;
     private String title;
-    private String type;
+    private String author;
+    @Enumerated(EnumType.STRING)
+    private Genre genre;
     private String publishingHouse;
     private BigDecimal price;
     private boolean isDeleted = Boolean.FALSE;
