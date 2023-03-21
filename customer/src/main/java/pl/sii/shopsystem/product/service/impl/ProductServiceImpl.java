@@ -4,9 +4,11 @@ import kafka.dto.ProductDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import pl.sii.shopsystem.product.dto.ProductTypeNumberOutputDto;
 import pl.sii.shopsystem.product.dto.ProductOutputDto;
 import pl.sii.shopsystem.product.repository.ProductRepository;
 import pl.sii.shopsystem.product.service.ProductService;
+import product.model.Genre;
 
 import java.util.NoSuchElementException;
 import java.util.UUID;
@@ -36,6 +38,14 @@ public class ProductServiceImpl implements ProductService {
         return productRepository.findById(productId)
                 .map(productMapper::mapToProductOutputDto)
                 .orElseThrow(() -> new NoSuchElementException(NO_PRODUCT_FOUND.getMessage()));
+    }
+
+    @Override
+    public ProductTypeNumberOutputDto getNumberOfProductsByGenre(Genre type) {
+        return ProductTypeNumberOutputDto.builder()
+                .type(type)
+                .productsNumber(productRepository.countByType(type))
+                .build();
     }
 
     @Override

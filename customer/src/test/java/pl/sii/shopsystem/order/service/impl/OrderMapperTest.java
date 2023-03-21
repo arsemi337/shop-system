@@ -44,9 +44,8 @@ public class OrderMapperTest {
         List<OrderProductOutputDto> purchasedProducts = new ArrayList<>();
         purchasedProducts.add(OrderProductOutputDto.builder()
                 .title("Potop")
-                .author("Henryk Sienkiewicz")
-                .genre(Genre.HISTORICAL_FICTION)
-                .publishingHouse("Greg")
+                .type(Genre.HISTORICAL_FICTION)
+                .manufacturer("Greg")
                 .price(new BigDecimal("9.99"))
                 .quantity(1)
                 .build());
@@ -73,9 +72,8 @@ public class OrderMapperTest {
                 .id(uuid)
                 .creationTime(timeSupplier.get())
                 .title("Potop")
-                .author("Henryk Sienkiewicz")
-                .genre(Genre.HISTORICAL_FICTION)
-                .publishingHouse("Greg")
+                .type(Genre.HISTORICAL_FICTION)
+                .manufacturer("Greg")
                 .price(new BigDecimal("9.99"))
                 .build();
         List<ProductQuantity> productQuantities = new ArrayList<>();
@@ -113,9 +111,8 @@ public class OrderMapperTest {
                 .id(uuid)
                 .creationTime(timeSupplier.get())
                 .title("Potop")
-                .author("Henryk Sienkiewicz")
-                .genre(Genre.HISTORICAL_FICTION)
-                .publishingHouse("Greg")
+                .type(Genre.HISTORICAL_FICTION)
+                .manufacturer("Greg")
                 .price(new BigDecimal("9.99"))
                 .build();
         List<ProductQuantity> productQuantities = new ArrayList<>();
@@ -129,9 +126,8 @@ public class OrderMapperTest {
 
         // then
         assertEquals(orderProductOutputDtoList.get(0).title(), product.getTitle());
-        assertEquals(orderProductOutputDtoList.get(0).author(), product.getAuthor());
-        assertEquals(orderProductOutputDtoList.get(0).genre(), product.getGenre());
-        assertEquals(orderProductOutputDtoList.get(0).publishingHouse(), product.getPublishingHouse());
+        assertEquals(orderProductOutputDtoList.get(0).type(), product.getType());
+        assertEquals(orderProductOutputDtoList.get(0).manufacturer(), product.getManufacturer());
         assertEquals(orderProductOutputDtoList.get(0).price(), product.getPrice());
         assertEquals(orderProductOutputDtoList.get(0).quantity(), 1);
     }

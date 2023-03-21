@@ -83,8 +83,8 @@ public class ProductServiceImpl implements ProductService {
 
         validator.validateProductTitleChange(product.getTitle(), productInputDto.title());
         product.setTitle(productInputDto.title());
-        product.setGenre(Genre.valueOf(productInputDto.genre()));
-        product.setPublishingHouse(productInputDto.publishingHouse());
+        product.setType(Genre.valueOf(productInputDto.type()));
+        product.setManufacturer(productInputDto.manufacturer());
         product.setPrice(new BigDecimal(productInputDto.price()));
 
         productRepository.save(product);

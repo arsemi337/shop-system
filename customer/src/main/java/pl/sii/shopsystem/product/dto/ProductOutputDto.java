@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 public record ProductOutputDto(
         String id,
         String title,
-        Genre genre,
-        String publishingHouse,
+        Genre type,
+        String manufacturer,
         BigDecimal price) {
 }

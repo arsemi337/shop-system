@@ -20,8 +20,8 @@ class ProductMapper {
         return Product.builder()
                 .creationTime(timeSupplier.get())
                 .title(productInputDto.title())
-                .genre(Genre.valueOf(productInputDto.genre()))
-                .publishingHouse(productInputDto.publishingHouse())
+                .type(Genre.valueOf(productInputDto.type()))
+                .manufacturer(productInputDto.manufacturer())
                 .price(new BigDecimal(productInputDto.price()))
                 .build();
     }
@@ -29,9 +29,9 @@ class ProductMapper {
     ProductOutputDto mapToProductOutputDto(Product product) {
         return ProductOutputDto.builder()
                 .id(product.getId().toString())
-                .genre(product.getGenre())
+                .type(product.getType())
                 .title(product.getTitle())
-                .publishingHouse(product.getPublishingHouse())
+                .manufacturer(product.getManufacturer())
                 .price(product.getPrice())
                 .build();
     }

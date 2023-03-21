@@ -9,9 +9,9 @@ class ProductMapper {
     ProductOutputDto mapToProductOutputDto(Product product) {
         return ProductOutputDto.builder()
                 .id(product.getId().toString())
-                .genre(product.getGenre())
+                .type(product.getType())
                 .title(product.getTitle())
-                .publishingHouse(product.getPublishingHouse())
+                .manufacturer(product.getManufacturer())
                 .price(product.getPrice())
                 .build();
     }
@@ -21,8 +21,8 @@ class ProductMapper {
                 .id(productDto.id())
                 .creationTime(productDto.creationTime())
                 .title(productDto.title())
-                .genre(productDto.genre())
-                .publishingHouse(productDto.publishingHouse())
+                .type(productDto.type())
+                .manufacturer(productDto.manufacturer())
                 .price(productDto.price())
                 .isDeleted(productDto.isDeleted())
                 .build();

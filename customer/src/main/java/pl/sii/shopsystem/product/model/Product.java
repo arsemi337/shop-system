@@ -25,10 +25,9 @@ public class Product {
     private UUID id;
     private LocalDateTime creationTime;
     private String title;
-    private String author;
     @Enumerated(EnumType.STRING)
-    private Genre genre;
-    private String publishingHouse;
+    private Genre type;
+    private String manufacturer;
     private BigDecimal price;
     private boolean isDeleted = Boolean.FALSE;
 

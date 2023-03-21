@@ -7,8 +7,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import pl.sii.shopsystem.product.dto.ProductTypeNumberOutputDto;
 import pl.sii.shopsystem.product.dto.ProductOutputDto;
 import pl.sii.shopsystem.product.service.ProductService;
+import product.model.Genre;
 
 @RestController
 @Tag(name = "Product")
@@ -26,5 +28,10 @@ public class ProductController {
     @GetMapping("/{id}")
     ResponseEntity<ProductOutputDto> fetchProductById(@PathVariable String id) {
         return ResponseEntity.ok(productService.fetchProductById(id));
+    }
+
+    @GetMapping
+    ResponseEntity<ProductTypeNumberOutputDto> getNumberOfProductsByGenre(@RequestParam("type") Genre type) {
+        return ResponseEntity.ok(productService.getNumberOfProductsByGenre(type));
     }
 }

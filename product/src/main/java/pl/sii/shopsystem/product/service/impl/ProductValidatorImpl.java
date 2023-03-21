@@ -27,7 +27,7 @@ public class ProductValidatorImpl implements ProductValidator {
         if (isAnyBlank(productInputDto)) {
             throw new IllegalArgumentException(INPUT_DATA_CONTAINS_BLANK_FIELDS.getMessage());
         }
-        validateGenre(productInputDto.genre());
+        validateGenre(productInputDto.type());
         validatePrice(productInputDto.price());
     }
 
@@ -51,8 +51,8 @@ public class ProductValidatorImpl implements ProductValidator {
     private boolean isAnyBlank(ProductInputDto productInputDto) {
         return StringUtils.isAnyBlank(
                 productInputDto.title(),
-                productInputDto.genre(),
-                productInputDto.publishingHouse(),
+                productInputDto.type(),
+                productInputDto.manufacturer(),
                 productInputDto.price());
 
     }

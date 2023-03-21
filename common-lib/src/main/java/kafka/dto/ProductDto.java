@@ -13,8 +13,8 @@ public record ProductDto(
         UUID id,
         LocalDateTime creationTime,
         String title,
-        Genre genre,
-        String publishingHouse,
+        Genre type,
+        String manufacturer,
         BigDecimal price,
         boolean isDeleted
 ) {
@@ -24,8 +24,8 @@ public record ProductDto(
         return new ToStringBuilder(this)
                 .append("id", id)
                 .append("title", title)
-                .append("type", genre)
-                .append("publishingHouse", publishingHouse)
+                .append("type", type)
+                .append("manufacturer", manufacturer)
                 .append("price", price)
                 .append("creationTime", creationTime)
                 .append("isDeleted", isDeleted)

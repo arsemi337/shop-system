@@ -75,9 +75,8 @@ public class OrderIntegrationTest {
                 .body("customerEmail", equalTo(customer.getEmail()))
                 .body("orderedProducts.size()", equalTo(1))
                 .body("orderedProducts[0].title", equalTo(product.getTitle()))
-                .body("orderedProducts[0].author", equalTo(product.getAuthor()))
-                .body("orderedProducts[0].genre", equalTo(product.getGenre().toString()))
-                .body("orderedProducts[0].publishingHouse", equalTo(product.getPublishingHouse()))
+                .body("orderedProducts[0].type", equalTo(product.getType().toString()))
+                .body("orderedProducts[0].manufacturer", equalTo(product.getManufacturer()))
                 .body("orderedProducts[0].price", equalTo(product.getPrice().floatValue()))
                 .body("orderedProducts[0].quantity", equalTo(quantity))
                 .body("totalCost", equalTo(
@@ -109,9 +108,8 @@ public class OrderIntegrationTest {
         Product product = Product.builder()
                 .id(UUID.randomUUID())
                 .title("Potop")
-                .author("Henryk Sienkiewicz")
-                .genre(Genre.HISTORICAL_FICTION)
-                .publishingHouse("Greg")
+                .type(Genre.HISTORICAL_FICTION)
+                .manufacturer("Greg")
                 .price(new BigDecimal("9.99"))
                 .build();
         return productRepository.save(product);

@@ -69,9 +69,8 @@ public class OrderServiceTest {
                 .id(productId)
                 .creationTime(timeSupplier.get())
                 .title("Potop")
-                .author("Henryk Sienkiewicz")
-                .genre(Genre.HISTORICAL_FICTION)
-                .publishingHouse("Greg")
+                .type(Genre.HISTORICAL_FICTION)
+                .manufacturer("Greg")
                 .price(new BigDecimal("9.99"))
                 .build();
         List<OrderProductInputDto> orderProducts = new ArrayList<>();
@@ -86,9 +85,8 @@ public class OrderServiceTest {
         List<OrderProductOutputDto> orderProductOutputDtoList = new ArrayList<>();
         orderProductOutputDtoList.add(OrderProductOutputDto.builder()
                 .title(product.getTitle())
-                        .author(product.getAuthor())
-                .genre(product.getGenre())
-                .publishingHouse(product.getPublishingHouse())
+                .type(product.getType())
+                .manufacturer(product.getManufacturer())
                 .price(product.getPrice())
                 .quantity(10)
                 .build());
