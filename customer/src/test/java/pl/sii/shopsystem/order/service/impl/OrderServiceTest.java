@@ -69,7 +69,7 @@ public class OrderServiceTest {
                 .creationTime(timeSupplier.get())
                 .type("Smartphone")
                 .title("Pixel 6")
-                .manufacturer("Google")
+                .publishingHouse("Google")
                 .price(new BigDecimal("479.99"))
                 .build();
         List<OrderProductInputDto> orderProducts = new ArrayList<>();
@@ -85,7 +85,7 @@ public class OrderServiceTest {
         orderProductOutputDtoList.add(OrderProductOutputDto.builder()
                 .title(product.getTitle())
                 .type(product.getType())
-                .manufacturer(product.getManufacturer())
+                .publishingHouse(product.getPublishingHouse())
                 .price(product.getPrice())
                 .quantity(10)
                 .build());

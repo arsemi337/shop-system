@@ -6,6 +6,6 @@ import lombok.Builder;
 public record ProductInputDto(
         String type,
         String title,
-        String manufacturer,
+        String publishingHouse,
         String price) {
 }

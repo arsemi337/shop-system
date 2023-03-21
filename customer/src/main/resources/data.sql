@@ -12,7 +12,7 @@ VALUES
 INSERT
 INTO
   products
-  (id, creation_time, type, title, manufacturer, price, is_deleted)
+  (id, creation_time, type, title, publishingHouse, price, is_deleted)
 VALUES
   ('7a9c839a-ac5c-11ed-afa1-0242ac120002', '2004-10-19 10:23:54', 'Smartphone', 'Pixel 6', 'Google', 479.99, FALSE),
   ('7a9c87a0-ac5c-11ed-afa1-0242ac120002', '2004-10-19 10:24:54', 'Laptop', 'Swift 3', 'Acer', 809.99, FALSE),

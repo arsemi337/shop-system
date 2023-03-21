@@ -20,7 +20,7 @@ class ProductMapper {
                 .creationTime(timeSupplier.get())
                 .title(productInputDto.title())
                 .type(productInputDto.type())
-                .manufacturer(productInputDto.manufacturer())
+                .publishingHouse(productInputDto.publishingHouse())
                 .price(new BigDecimal(productInputDto.price()))
                 .build();
     }
@@ -30,7 +30,7 @@ class ProductMapper {
                 .id(product.getId().toString())
                 .type(product.getType())
                 .title(product.getTitle())
-                .manufacturer(product.getManufacturer())
+                .publishingHouse(product.getPublishingHouse())
                 .price(product.getPrice())
                 .build();
     }

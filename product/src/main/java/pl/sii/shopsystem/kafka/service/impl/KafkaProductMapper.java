@@ -11,7 +11,7 @@ public class KafkaProductMapper {
                 .creationTime(product.getCreationTime())
                 .title(product.getTitle())
                 .type(product.getType())
-                .manufacturer(product.getManufacturer())
+                .publishingHouse(product.getPublishingHouse())
                 .price(product.getPrice())
                 .isDeleted(product.isDeleted())
                 .build();

@@ -11,7 +11,7 @@ class ProductMapper {
                 .id(product.getId().toString())
                 .type(product.getType())
                 .title(product.getTitle())
-                .manufacturer(product.getManufacturer())
+                .publishingHouse(product.getPublishingHouse())
                 .price(product.getPrice())
                 .build();
     }
@@ -22,7 +22,7 @@ class ProductMapper {
                 .creationTime(productDto.creationTime())
                 .title(productDto.title())
                 .type(productDto.type())
-                .manufacturer(productDto.manufacturer())
+                .publishingHouse(productDto.publishingHouse())
                 .price(productDto.price())
                 .isDeleted(productDto.isDeleted())
                 .build();

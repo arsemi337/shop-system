@@ -13,7 +13,7 @@ public record ProductDto(
         LocalDateTime creationTime,
         String title,
         String type,
-        String manufacturer,
+        String publishingHouse,
         BigDecimal price,
         boolean isDeleted
 ) {
@@ -24,6 +24,7 @@ public record ProductDto(
                 .append("id", id)
                 .append("title", title)
                 .append("type", type)
+                .append("publishingHouse", publishingHouse)
                 .append("price", price)
                 .append("creationTime", creationTime)
                 .append("isDeleted", isDeleted)

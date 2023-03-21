@@ -28,7 +28,7 @@ public class Product {
     private LocalDateTime creationTime;
     private String title;
     private String type;
-    private String manufacturer;
+    private String publishingHouse;
     private BigDecimal price;
     private boolean isDeleted = Boolean.FALSE;
 

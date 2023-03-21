@@ -75,7 +75,7 @@ public class OrderIntegrationTest {
                 .body("orderedProducts.size()", equalTo(1))
                 .body("orderedProducts[0].title", equalTo(product.getTitle()))
                 .body("orderedProducts[0].type", equalTo(product.getType()))
-                .body("orderedProducts[0].manufacturer", equalTo(product.getManufacturer()))
+                .body("orderedProducts[0].publishingHouse", equalTo(product.getPublishingHouse()))
                 .body("orderedProducts[0].price", equalTo(product.getPrice().floatValue()))
                 .body("orderedProducts[0].quantity", equalTo(quantity))
                 .body("totalCost", equalTo(
@@ -108,7 +108,7 @@ public class OrderIntegrationTest {
                 .id(UUID.randomUUID())
                 .title("Pixel 6")
                 .type("Smartphone")
-                .manufacturer("Google")
+                .publishingHouse("Google")
                 .price(new BigDecimal("479.99"))
                 .build();
         return productRepository.save(product);

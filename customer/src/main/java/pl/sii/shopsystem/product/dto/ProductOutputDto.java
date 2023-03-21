@@ -9,6 +9,6 @@ public record ProductOutputDto(
         String id,
         String type,
         String title,
-        String manufacturer,
+        String publishingHouse,
         BigDecimal price) {
 }

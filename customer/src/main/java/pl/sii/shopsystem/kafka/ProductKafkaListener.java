@@ -5,6 +5,7 @@ import kafka.dto.ProductDto;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Profile;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.Payload;
@@ -13,6 +14,7 @@ import pl.sii.shopsystem.product.service.ProductService;
 
 import java.math.BigDecimal;
 
+@Profile("devProfile")
 @Component
 public class ProductKafkaListener {
 
@@ -69,7 +71,7 @@ public class ProductKafkaListener {
                 StringUtils.isAnyBlank(
                         productDto.title(),
                         productDto.type(),
-                        productDto.manufacturer()) ||
+                        productDto.publishingHouse()) ||
                 productDto.creationTime() == null ||
                 productDto.price().compareTo(BigDecimal.ZERO) < 1;
     }

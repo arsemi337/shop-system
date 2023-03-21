@@ -44,7 +44,7 @@ public class OrderMapperTest {
         purchasedProducts.add(OrderProductOutputDto.builder()
                 .title("Pixel 6")
                 .type("Smartphone")
-                .manufacturer("Google")
+                .publishingHouse("Google")
                 .price(new BigDecimal("479.99"))
                 .quantity(1)
                 .build());
@@ -72,7 +72,7 @@ public class OrderMapperTest {
                 .creationTime(timeSupplier.get())
                 .type("Smartphone")
                 .title("Pixel 6")
-                .manufacturer("Google")
+                .publishingHouse("Google")
                 .price(new BigDecimal("479.99"))
                 .build();
         List<ProductQuantity> productQuantities = new ArrayList<>();
@@ -111,7 +111,7 @@ public class OrderMapperTest {
                 .creationTime(timeSupplier.get())
                 .type("Smartphone")
                 .title("Pixel 6")
-                .manufacturer("Google")
+                .publishingHouse("Google")
                 .price(new BigDecimal("479.99"))
                 .build();
         List<ProductQuantity> productQuantities = new ArrayList<>();
@@ -126,7 +126,7 @@ public class OrderMapperTest {
         // then
         assertEquals(orderProductOutputDtoList.get(0).title(), product.getTitle());
         assertEquals(orderProductOutputDtoList.get(0).type(), product.getType());
-        assertEquals(orderProductOutputDtoList.get(0).manufacturer(), product.getManufacturer());
+        assertEquals(orderProductOutputDtoList.get(0).publishingHouse(), product.getPublishingHouse());
         assertEquals(orderProductOutputDtoList.get(0).price(), product.getPrice());
         assertEquals(orderProductOutputDtoList.get(0).quantity(), 1);
     }

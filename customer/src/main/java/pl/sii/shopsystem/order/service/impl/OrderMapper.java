@@ -55,7 +55,7 @@ public class OrderMapper {
                 .map(productQuantity -> OrderProductOutputDto.builder()
                         .title(productQuantity.product().getTitle())
                         .type(productQuantity.product().getType())
-                        .manufacturer(productQuantity.product().getManufacturer())
+                        .publishingHouse(productQuantity.product().getPublishingHouse())
                         .price(productQuantity.product().getPrice())
                         .quantity(productQuantity.quantity())
                         .build())

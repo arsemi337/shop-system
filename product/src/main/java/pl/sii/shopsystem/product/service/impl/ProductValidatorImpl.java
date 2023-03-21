@@ -49,7 +49,7 @@ public class ProductValidatorImpl implements ProductValidator {
         return StringUtils.isAnyBlank(
                 productInputDto.title(),
                 productInputDto.type(),
-                productInputDto.manufacturer(),
+                productInputDto.publishingHouse(),
                 productInputDto.price());
     }
 
