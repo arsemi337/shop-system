@@ -1,7 +1,7 @@
 INSERT
 INTO
   products
-  (id, creation_time, title, type, manufacturer, price, is_deleted)
+  (id, creation_time, name, type, manufacturer, price, is_deleted)
 VALUES
   ('7a9c839a-ac5c-11ed-afa1-0242ac120002', '2004-10-19 10:23:54', 'Szaranowicz. Życie z pasją', 'BIOGRAPHY', 'SQN', 8.99, FALSE),
   ('7a9c87a0-ac5c-11ed-afa1-0242ac120002', '2004-10-19 10:24:54', 'Złodziej pioruna', 'ADVENTURE', 'Galeria Książki', 5.99, FALSE),

@@ -8,7 +8,7 @@
         <version>3.0.2</version>
         <relativePath/>
     </parent>
-    <groupId>pl.sii</groupId>
+    <groupId>pl.artur</groupId>
     <artifactId>common-lib</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>common-lib</name>

@@ -3,7 +3,7 @@ DROP TABLE IF EXISTS products;
 CREATE TABLE products (
   id UUID NOT NULL,
    creation_time TIMESTAMP WITHOUT TIME ZONE,
-   title VARCHAR(255),
+   name VARCHAR(255),
    type VARCHAR(255),
    manufacturer VARCHAR(255),
    price DECIMAL,

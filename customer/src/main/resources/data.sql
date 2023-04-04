@@ -3,11 +3,11 @@ INTO
   customers
   (id, creation_time, firstname, lastname, email, is_deleted)
 VALUES
-  ('ebb0e67e-ac5d-11ed-afa1-0242ac120002', '2004-10-19 10:23:54', 'Prescott', 'Rutledge', 'prescott@sii.pl', FALSE),
-  ('ebb0e9f8-ac5d-11ed-afa1-0242ac120002', '2004-10-19 10:24:54', 'Jonas', 'Buckner', 'jonas@sii.pl', FALSE),
-  ('ebb0ebd8-ac5d-11ed-afa1-0242ac120002', '2004-10-19 10:25:54', 'Regan', 'Baird', 'regan@sii.pl', FALSE),
-  ('ebb0edb7-ac5d-11ed-afa1-0242ac120002', '2004-10-19 10:26:54', 'Ursula', 'Butler', 'ursula@sii.pl', FALSE),
-  ('ebb0ef5c-ac5d-11ed-afa1-0242ac120002', '2004-10-19 10:27:54', 'Natalie', 'Richards', 'natalie@sii.pl', FALSE);
+  ('ebb0e67e-ac5d-11ed-afa1-0242ac120002', '2004-10-19 10:23:54', 'Prescott', 'Rutledge', 'prescott@email.pl', FALSE),
+  ('ebb0e9f8-ac5d-11ed-afa1-0242ac120002', '2004-10-19 10:24:54', 'Jonas', 'Buckner', 'jonas@email.pl', FALSE),
+  ('ebb0ebd8-ac5d-11ed-afa1-0242ac120002', '2004-10-19 10:25:54', 'Regan', 'Baird', 'regan@email.pl', FALSE),
+  ('ebb0edb7-ac5d-11ed-afa1-0242ac120002', '2004-10-19 10:26:54', 'Ursula', 'Butler', 'ursula@email.pl', FALSE),
+  ('ebb0ef5c-ac5d-11ed-afa1-0242ac120002', '2004-10-19 10:27:54', 'Natalie', 'Richards', 'natalie@email.pl', FALSE);
 
 INSERT
 INTO

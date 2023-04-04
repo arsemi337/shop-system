@@ -52,13 +52,13 @@ Initial data contains the following lists:
 
 #### Customers
 
-|   | id                                     | creation_time         | firstname  | lastname   | email             | is_deleted |
-|---|----------------------------------------|-----------------------|------------|------------|-------------------|------------|
-| 1 | "ebb0e67e-ac5d-11ed-afa1-0242ac120002" | "2004-10-19 10:23:54" | "Prescott" | "Rutledge" | "prescott@sii.pl" | false      |
-| 2 | "ebb0e9f8-ac5d-11ed-afa1-0242ac120002" | "2004-10-19 10:24:54" | "Jonas"    | "Buckner"  | "jonas@sii.pl"    | false      |
-| 3 | "ebb0ebd8-ac5d-11ed-afa1-0242ac120002" | "2004-10-19 10:25:54" | "Regan"    | "Baird"    | "regan@sii.pl"    | false      |
-| 4 | "ebb0edb7-ac5d-11ed-afa1-0242ac120002" | "2004-10-19 10:26:54" | "Ursula"   | "Butler"   | "ursula@sii.pl"   | false      |
-| 5 | "ebb0ef5c-ac5d-11ed-afa1-0242ac120002" | "2004-10-19 10:27:54" | "Natalie"  | "Richards" | "natalie@sii.pl"  | false      |
+|   | id                                     | creation_time         | firstname  | lastname   | email               | is_deleted |
+|---|----------------------------------------|-----------------------|------------|------------|---------------------|------------|
+| 1 | "ebb0e67e-ac5d-11ed-afa1-0242ac120002" | "2004-10-19 10:23:54" | "Prescott" | "Rutledge" | "prescott@email.pl" | false      |
+| 2 | "ebb0e9f8-ac5d-11ed-afa1-0242ac120002" | "2004-10-19 10:24:54" | "Jonas"    | "Buckner"  | "jonas@email.pl"    | false      |
+| 3 | "ebb0ebd8-ac5d-11ed-afa1-0242ac120002" | "2004-10-19 10:25:54" | "Regan"    | "Baird"    | "regan@email.pl"    | false      |
+| 4 | "ebb0edb7-ac5d-11ed-afa1-0242ac120002" | "2004-10-19 10:26:54" | "Ursula"   | "Butler"   | "ursula@email.pl"   | false      |
+| 5 | "ebb0ef5c-ac5d-11ed-afa1-0242ac120002" | "2004-10-19 10:27:54" | "Natalie"  | "Richards" | "natalie@email.pl"  | false      |
 
 #### Products
 
@@ -81,7 +81,7 @@ Endpoints of this service are divided into three groups of resources: Customer, 
 {
   "firstname": "John",
   "lastname": "Doe",
-  "email": "newEmail@newEmail.com"
+  "email": "email@email.com"
 }
 ```
 
@@ -92,7 +92,7 @@ Endpoints of this service are divided into three groups of resources: Customer, 
   "id": "83cb721b-e18c-4890-8d3d-fa9a8ede8283",
   "firstname": "John",
   "lastname": "Doe",
-  "email": "newEmail@newEmail.com"
+  "email": "email@email.com"
 }
 ```
 
@@ -107,7 +107,7 @@ Customer ID is passed to the service as a path variable. The ID needs to have a 
   "id": "83cb721b-e18c-4890-8d3d-fa9a8ede8283",
   "firstname": "John",
   "lastname": "Doe",
-  "email": "newEmail@newEmail.com"
+  "email": "email@email.com"
 }
 ```
 
@@ -117,7 +117,7 @@ Customer ID is passed to the service as a path variable. The ID needs to have a 
 
 ```json
 {
-  "email": "newEmail@newEmail.com"
+  "email": "email@email.com"
 }
 ```
 
@@ -130,7 +130,7 @@ Customer ID is passed to the service as a path variable. The ID needs to have a 
   "id": "83cb721b-e18c-4890-8d3d-fa9a8ede8283",
   "newFirstname": "John",
   "newLastname": "Doe",
-  "newEmail": "newEmail@newEmail.com"
+  "email": "email@email.com"
 }
 ```
 
@@ -141,7 +141,7 @@ Customer ID is passed to the service as a path variable. The ID needs to have a 
   "id": "83cb721b-e18c-4890-8d3d-fa9a8ede8283",
   "firstname": "John",
   "lastname": "Doe",
-  "email": "newEmail@newEmail.com"
+  "email": "email@email.com"
 }
 ```
 
@@ -209,7 +209,7 @@ which take page number and page size, correspondingly.
 {
   "customerFirstname": "Jonh",
   "customerLastname": "Doe",
-  "customerEmail": "newEmail@newEmail.com",
+  "customerEmail": "email@email.com",
   "orderedProducts": [
     {
       "title": "Pixel 6",
