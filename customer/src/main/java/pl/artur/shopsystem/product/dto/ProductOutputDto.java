@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 @Builder
 public record ProductOutputDto(
         String id,
-        String title,
+        String name,
         Genre type,
         String manufacturer,
         BigDecimal price) {

@@ -8,7 +8,9 @@ import pl.artur.shopsystem.customer.dto.UpdateCustomerInputDto;
 public interface CustomerService {
     CustomerOutputDto addCustomer(CustomerInputDto customerInputDto);
 
-    CustomerOutputDto getCustomer(String id);
+    CustomerOutputDto getCustomerByEmail(CustomerEmailInputDto customerEmailInputDto);
+
+    CustomerOutputDto getCustomerById(String id);
 
     void removeCustomer(CustomerEmailInputDto customerEmailInputDto);
 

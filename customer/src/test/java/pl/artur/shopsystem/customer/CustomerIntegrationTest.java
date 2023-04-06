@@ -48,7 +48,7 @@ public class CustomerIntegrationTest {
                         }
                         """)
                 .contentType(JSON)
-                .when().post("/api/v1/customer")
+                .when().post("/api/v1/customers")
                 .then().statusCode(HttpStatus.SC_OK)
                 .body("firstname", equalTo("John"))
                 .body("lastname", equalTo("Doe"))
@@ -63,15 +63,38 @@ public class CustomerIntegrationTest {
     }
 
     @Test
-    @DisplayName("Fetching customer happy path")
-    void fetchingCustomerHappyPath() {
+    @DisplayName("Fetching customer by email happy path")
+    void fetchingCustomerByEmailHappyPath() {
+        assertThat(customerRepository.findAll()).isEmpty();
+        addCustomerToDatabase();
+        assertThat(customerRepository.findAll()).hasSize(1);
+
+        given()
+                .body("""
+                        {
+                            "email": "jdoe@email.pl"
+                        }
+                        """)
+                .contentType(JSON)
+                .when().get("/api/v1/customers")
+                .then().statusCode(HttpStatus.SC_OK)
+                .body("firstname", equalTo("John"))
+                .body("lastname", equalTo("Doe"))
+                .body("email", equalTo("jdoe@email.pl"));
+
+        assertThat(customerRepository.findAll()).hasSize(1);
+    }
+
+    @Test
+    @DisplayName("Fetching customer by ID happy path")
+    void fetchingCustomerByIdHappyPath() {
         assertThat(customerRepository.findAll()).isEmpty();
         Customer customer = addCustomerToDatabase();
         assertThat(customerRepository.findAll()).hasSize(1);
 
         given()
                 .pathParams("id", customer.getId())
-                .when().get("/api/v1/customer/{id}")
+                .when().get("/api/v1/customers/{id}")
                 .then().statusCode(HttpStatus.SC_OK)
                 .body("firstname", equalTo("John"))
                 .body("lastname", equalTo("Doe"))
@@ -87,13 +110,15 @@ public class CustomerIntegrationTest {
         addCustomerToDatabase();
         assertThat(customerRepository.findAll()).hasSize(1);
 
-        given().accept(JSON).body("""
+        given()
+                .accept(JSON)
+                .body("""
                         {
                             "email": "jdoe@email.pl"
                         }
                         """)
                 .contentType(JSON)
-                .when().delete("/api/v1/customer")
+                .when().delete("/api/v1/customers")
                 .then().statusCode(HttpStatus.SC_OK);
 
         assertThat(customerRepository.findAll()).hasSize(0);
@@ -115,7 +140,7 @@ public class CustomerIntegrationTest {
                         }
                         """, customer.getId()))
                 .contentType(JSON)
-                .when().put("/api/v1/customer")
+                .when().put("/api/v1/customers")
                 .then().statusCode(HttpStatus.SC_OK)
                 .body("firstname", equalTo("Mark"))
                 .body("lastname", equalTo("Johnson"))

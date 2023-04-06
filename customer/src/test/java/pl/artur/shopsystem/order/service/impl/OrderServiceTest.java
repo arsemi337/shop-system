@@ -68,7 +68,7 @@ public class OrderServiceTest {
         Product product = Product.builder()
                 .id(productId)
                 .creationTime(timeSupplier.get())
-                .title("Potop")
+                .name("Potop")
                 .type(Genre.HISTORICAL_FICTION)
                 .manufacturer("Greg")
                 .price(new BigDecimal("9.99"))
@@ -84,7 +84,7 @@ public class OrderServiceTest {
                 .build();
         List<OrderProductOutputDto> orderProductOutputDtoList = new ArrayList<>();
         orderProductOutputDtoList.add(OrderProductOutputDto.builder()
-                .title(product.getTitle())
+                .name(product.getName())
                 .type(product.getType())
                 .manufacturer(product.getManufacturer())
                 .price(product.getPrice())

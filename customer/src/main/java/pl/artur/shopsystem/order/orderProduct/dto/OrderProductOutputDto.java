@@ -7,7 +7,7 @@ import java.math.BigDecimal;
 
 @Builder
 public record OrderProductOutputDto(
-        String title,
+        String name,
         Genre type,
         String manufacturer,
         BigDecimal price,

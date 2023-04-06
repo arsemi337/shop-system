@@ -69,12 +69,10 @@ public class ProductKafkaListener {
     }
 
     private boolean isProductDtoValid(ProductDto productDto) {
-        return productDto.id() == null ||
-                (StringUtils.isAnyBlank(
-                        productDto.title(),
-                        productDto.manufacturer()) ||
-                        productDto.creationTime() == null ||
-                        productDto.price().compareTo(BigDecimal.ZERO) < 1 &&
-                                EnumUtils.isValidEnum(Genre.class, productDto.type().toString()));
+        return !(StringUtils.isAnyBlank(
+                productDto.name(),
+                productDto.manufacturer()) &&
+                productDto.price().compareTo(BigDecimal.ZERO) > 0 &&
+                EnumUtils.isValidEnum(Genre.class, productDto.type().toString()));
     }
 }

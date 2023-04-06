@@ -44,7 +44,16 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public CustomerOutputDto getCustomer(String id) {
+    public CustomerOutputDto getCustomerByEmail(CustomerEmailInputDto customerEmailInputDto) {
+        validator.validateCustomerEmailInputDto(customerEmailInputDto);
+
+        Customer customer = customerRepository.findByEmail(customerEmailInputDto.email())
+                .orElseThrow(() -> new NoSuchElementException(NO_CUSTOMER_BY_EMAIL_FOUND.getMessage()));
+        return mapper.mapToCustomerOutputDto(customer);
+    }
+
+    @Override
+    public CustomerOutputDto getCustomerById(String id) {
         Customer customer = customerRepository.findById(UUID.fromString(id))
                 .orElseThrow(() -> new NoSuchElementException(NO_CUSTOMER_BY_EMAIL_FOUND.getMessage()));
 

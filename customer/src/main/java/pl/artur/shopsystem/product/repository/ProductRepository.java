@@ -15,5 +15,5 @@ public interface ProductRepository extends JpaRepository<Product, UUID> {
 
     long countByType(Genre type);
     @Lock(LockModeType.PESSIMISTIC_READ)
-    Optional<Product> findAllByTitle(String title);
+    Optional<Product> findAllByName(String name);
 }

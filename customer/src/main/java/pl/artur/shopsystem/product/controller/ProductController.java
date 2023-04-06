@@ -14,7 +14,7 @@ import product.model.Genre;
 
 @RestController
 @Tag(name = "Product")
-@RequestMapping("/api/v1/product")
+@RequestMapping("/api/v1/products")
 @RequiredArgsConstructor
 public class ProductController {
 

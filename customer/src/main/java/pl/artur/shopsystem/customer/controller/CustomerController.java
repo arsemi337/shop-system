@@ -12,7 +12,7 @@ import pl.artur.shopsystem.customer.service.CustomerService;
 
 @RestController
 @Tag(name = "Customer")
-@RequestMapping("/api/v1/customer")
+@RequestMapping("/api/v1/customers")
 @RequiredArgsConstructor
 public class CustomerController {
 
@@ -23,9 +23,14 @@ public class CustomerController {
         return ResponseEntity.ok(customerService.addCustomer(customerInputDto));
     }
 
+    @GetMapping
+    ResponseEntity<CustomerOutputDto> getCustomerByEmail(@RequestBody CustomerEmailInputDto customerEmailInputDto) {
+        return ResponseEntity.ok(customerService.getCustomerByEmail(customerEmailInputDto));
+    }
+
     @GetMapping("/{id}")
-    ResponseEntity<CustomerOutputDto> getCustomer(@PathVariable String id) {
-        return ResponseEntity.ok(customerService.getCustomer(id));
+    ResponseEntity<CustomerOutputDto> getCustomerById(@PathVariable String id) {
+        return ResponseEntity.ok(customerService.getCustomerById(id));
     }
 
     @DeleteMapping

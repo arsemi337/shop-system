@@ -24,7 +24,7 @@ public class Product {
     @Id
     private UUID id;
     private LocalDateTime creationTime;
-    private String title;
+    private String name;
     @Enumerated(EnumType.STRING)
     private Genre type;
     private String manufacturer;

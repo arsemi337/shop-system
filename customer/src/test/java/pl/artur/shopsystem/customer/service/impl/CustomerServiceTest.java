@@ -75,7 +75,7 @@ public class CustomerServiceTest {
         when(customerRepository.findById(uuid)).thenReturn(Optional.of(customer));
 
         // when
-        CustomerOutputDto customerOutput = underTest.getCustomer(uuid.toString());
+        CustomerOutputDto customerOutput = underTest.getCustomerById(uuid.toString());
 
         // then
         assertEquals(customerOutput.id(), uuid);
@@ -94,7 +94,7 @@ public class CustomerServiceTest {
 
         // then
         assertThatExceptionOfType(NoSuchElementException.class)
-                .isThrownBy(() -> underTest.getCustomer(uuid.toString())).withMessage(NO_CUSTOMER_BY_EMAIL_FOUND.getMessage());
+                .isThrownBy(() -> underTest.getCustomerById(uuid.toString())).withMessage(NO_CUSTOMER_BY_EMAIL_FOUND.getMessage());
         verify(customerRepository).findById(uuid);
         verify(customerRepository, never()).save(any(Customer.class));
     }

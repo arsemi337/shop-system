@@ -27,7 +27,7 @@ ALTER TABLE orders ADD CONSTRAINT FK_ORDERS_ON_CUSTOMER FOREIGN KEY (customer_id
 CREATE TABLE products (
   id UUID NOT NULL,
    creation_time TIMESTAMP WITHOUT TIME ZONE,
-   title VARCHAR(255),
+   name VARCHAR(255),
    type VARCHAR(255),
    manufacturer VARCHAR(255),
    price DECIMAL,

@@ -9,6 +9,7 @@ import pl.artur.shopsystem.product.dto.ProductTypeNumberOutputDto;
 import pl.artur.shopsystem.product.repository.ProductRepository;
 import pl.artur.shopsystem.product.service.ProductService;
 import product.model.Genre;
+import supplier.TimeSupplier;
 
 import java.util.NoSuchElementException;
 import java.util.UUID;
@@ -21,9 +22,10 @@ public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
     private final ProductMapper productMapper;
 
-    ProductServiceImpl(ProductRepository productRepository) {
+    ProductServiceImpl(ProductRepository productRepository,
+                       TimeSupplier timeSupplier) {
         this.productRepository = productRepository;
-        this.productMapper = new ProductMapper();
+        this.productMapper = new ProductMapper(timeSupplier);
     }
 
     @Override

@@ -53,7 +53,7 @@ public class OrderMapper {
         return productQuantities
                 .stream()
                 .map(productQuantity -> OrderProductOutputDto.builder()
-                        .title(productQuantity.product().getTitle())
+                        .name(productQuantity.product().getName())
                         .type(productQuantity.product().getType())
                         .manufacturer(productQuantity.product().getManufacturer())
                         .price(productQuantity.product().getPrice())

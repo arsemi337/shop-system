@@ -1,6 +1,7 @@
 package product.model;
 
-import lombok.Builder;
+import java.util.Arrays;
+import java.util.function.Predicate;
 
 public enum Genre {
     FANTASY,
@@ -14,5 +15,9 @@ public enum Genre {
     AUTOBIOGRAPHY,
     PROGRAMMING,
     HISTORICAL_FICTION,
-    POPULAR_SCIENCE
+    POPULAR_SCIENCE;
+
+    public static boolean contains(String value) {
+        return Arrays.stream(values()).map(Enum::name).anyMatch(Predicate.isEqual(value));
+    }
 }

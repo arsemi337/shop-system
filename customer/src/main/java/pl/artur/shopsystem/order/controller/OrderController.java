@@ -10,7 +10,7 @@ import pl.artur.shopsystem.order.service.OrderService;
 
 @RestController
 @Tag(name = "Order")
-@RequestMapping("/api/v1/order")
+@RequestMapping("/api/v1/orders")
 @RequiredArgsConstructor
 public class OrderController {
 
