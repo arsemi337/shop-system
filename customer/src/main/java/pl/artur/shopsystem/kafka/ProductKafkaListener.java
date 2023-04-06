@@ -15,6 +15,7 @@ import pl.artur.shopsystem.product.service.ProductService;
 import product.model.Genre;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Profile("devProfile")
 @Component
@@ -27,14 +28,14 @@ public class ProductKafkaListener {
         this.productService = productService;
     }
 
-    @KafkaListener(topics = "product",
+    @KafkaListener(topics = "products",
             groupId = "groupId",
             containerFactory = "productKafkaListenerContainerFactory")
-    void productListener(@Payload ProductDto data,
+    void productListener(@Payload List<ProductDto> data,
                          @Header("EVENT_TYPE") String eventType) {
         try {
             switch (ProductHeader.valueOf(eventType)) {
-                case PRODUCT_CREATED -> addProduct(data);
+                case PRODUCT_CREATED -> addProducts(data);
                 case PRODUCT_MODIFIED -> updateProduct(data);
                 case PRODUCT_REMOVED -> removeProduct(data);
                 default -> logger.info(eventType + " header is not handled by the system");
@@ -44,28 +45,37 @@ public class ProductKafkaListener {
         }
     }
 
-    private void addProduct(ProductDto productDto) {
-        if (isProductDtoValid(productDto)) {
-            logger.warn("Invalid product couldn't be added to the database:\n" + productDto);
-        }
-        productService.saveProduct(productDto);
-        logger.info("Listener received a product:\n" + productDto + "\nwith a header: " + ProductHeader.PRODUCT_CREATED);
+    private void addProducts(List<ProductDto> productDtoList) {
+        productDtoList.forEach(productDto -> {
+            if (!isProductDtoValid(productDto)) {
+                logger.warn("Invalid product couldn't be added to the database: " + productDto);
+            } else {
+                productService.saveProduct(productDto);
+                logger.info("Listener received a product: " + productDto + " with a header: " + ProductHeader.PRODUCT_CREATED);
+            }
+        });
     }
 
-    private void updateProduct(ProductDto productDto) {
-        if (isProductDtoValid(productDto)) {
-            logger.warn("Invalid product couldn't be added to the database:\n" + productDto);
-        }
-        productService.updateProduct(productDto);
-        logger.info("Listener received a product:\n" + productDto + "\nwith a header: " + ProductHeader.PRODUCT_MODIFIED);
+    private void updateProduct(List<ProductDto> productDtoList) {
+        productDtoList.forEach(productDto -> {
+            if (isProductDtoValid(productDto)) {
+                logger.warn("Invalid product couldn't be updated in the database: " + productDto);
+            } else {
+                productService.updateProduct(productDto);
+                logger.info("Listener received a product: " + productDto + " with a header: " + ProductHeader.PRODUCT_MODIFIED);
+            }
+        });
     }
 
-    private void removeProduct(ProductDto productDto) {
-        if (isProductDtoValid(productDto)) {
-            logger.warn("Invalid product couldn't be added to the database:\n" + productDto);
-        }
-        productService.removeProduct(productDto);
-        logger.info("Listener received a product:\n" + productDto + "\nwith a header: " + ProductHeader.PRODUCT_REMOVED);
+    private void removeProduct(List<ProductDto> productDtoList) {
+        productDtoList.forEach(productDto -> {
+            if (isProductDtoValid(productDto)) {
+                logger.warn("Invalid product couldn't be removed from the database: " + productDto);
+            } else {
+                productService.removeProduct(productDto);
+                logger.info("Listener received a product: " + productDto + " with a header: " + ProductHeader.PRODUCT_REMOVED);
+            }
+        });
     }
 
     private boolean isProductDtoValid(ProductDto productDto) {

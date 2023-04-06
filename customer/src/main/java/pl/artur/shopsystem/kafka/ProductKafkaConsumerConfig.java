@@ -12,10 +12,9 @@ import org.springframework.kafka.config.KafkaListenerContainerFactory;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.kafka.listener.ConcurrentMessageListenerContainer;
-import org.springframework.kafka.support.serializer.ErrorHandlingDeserializer;
-import org.springframework.kafka.support.serializer.JsonDeserializer;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Profile("devProfile")
@@ -28,30 +27,25 @@ public class ProductKafkaConsumerConfig {
     public Map<String, Object> productConsumerConfig() {
         Map<String, Object> props = new HashMap<>();
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
-        props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, ErrorHandlingDeserializer.class);
-        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, ErrorHandlingDeserializer.class);
-        props.put(ErrorHandlingDeserializer.KEY_DESERIALIZER_CLASS, StringDeserializer.class);
-        props.put(ErrorHandlingDeserializer.VALUE_DESERIALIZER_CLASS, JsonDeserializer.class);
-        props.put(JsonDeserializer.KEY_DEFAULT_TYPE, "java.lang.String");
-        props.put(JsonDeserializer.VALUE_DEFAULT_TYPE, "kafka.dto.ProductDto");
+        props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, ProductDtoListDeserializer.class);
 
         return props;
     }
 
     @Bean
-    public ConsumerFactory<String, ProductDto> productConsumerFactory() {
+    public ConsumerFactory<String, List<ProductDto>> productConsumerFactory() {
         return new DefaultKafkaConsumerFactory<>(
                 productConsumerConfig());
     }
 
     @Bean
-    public KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<String, ProductDto>> productKafkaListenerContainerFactory(
-            ConsumerFactory<String, ProductDto> productConsumerFactory
+    public KafkaListenerContainerFactory<ConcurrentMessageListenerContainer<String, List<ProductDto>>> productKafkaListenerContainerFactory(
+            ConsumerFactory<String, List<ProductDto>> productConsumerFactory
     ) {
-        ConcurrentKafkaListenerContainerFactory<String, ProductDto> factory =
+        ConcurrentKafkaListenerContainerFactory<String, List<ProductDto>> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(productConsumerFactory);
-        factory.setCommonErrorHandler(new KafkaCustomerErrorHandler());
         return factory;
     }
 }

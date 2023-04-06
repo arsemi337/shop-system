@@ -31,7 +31,7 @@ public class KafkaServiceImpl implements KafkaService {
 
     @Override
     public void sendProductListToTopic(List<Product> products, String messageHeader) {
-        String topicName = topicConfig.productTopic().name();
+        String topicName = topicConfig.productsTopic().name();
         List<ProductDto> productDtoList = products.stream()
                 .map(productMapper::mapToProductDto)
                 .toList();
