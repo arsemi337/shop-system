@@ -1,15 +1,17 @@
 package pl.artur.shopsystem.product.service.impl;
 
+import exception.order.OrderException;
+import exception.order.ProductErrorDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import pl.artur.shopsystem.kafka.service.KafkaService;
 import pl.artur.shopsystem.product.dto.*;
+import pl.artur.shopsystem.product.model.Product;
 import pl.artur.shopsystem.product.repository.ProductRepository;
 import pl.artur.shopsystem.product.service.ProductParser;
 import pl.artur.shopsystem.product.service.ProductService;
-import pl.artur.shopsystem.kafka.service.KafkaService;
-import pl.artur.shopsystem.product.model.Product;
 import pl.artur.shopsystem.product.service.ProductValidator;
 import product.model.Genre;
 import supplier.TimeSupplier;
@@ -21,7 +23,8 @@ import java.util.stream.Stream;
 
 import static exception.ProductExceptionMessages.NO_PRODUCT_FOUND;
 import static exception.ProductExceptionMessages.NO_PRODUCT_FOUND_BY_NAME;
-import static java.util.stream.Collectors.groupingBy;
+import static exception.order.OrderExceptionMessages.NOT_ALL_PRODUCTS_AVAILABLE;
+import static java.util.stream.Collectors.*;
 import static kafka.ProductHeader.*;
 
 @Service
@@ -41,7 +44,7 @@ public class ProductServiceImpl implements ProductService {
         this.validator = validator;
         this.parser = parser;
         this.productRepository = productRepository;
-        this.productMapper = new ProductMapper(timeSupplier);
+        this.productMapper = new ProductMapper(timeSupplier, productRepository, parser);
         this.kafkaService = kafkaService;
     }
 
@@ -99,6 +102,7 @@ public class ProductServiceImpl implements ProductService {
         return productMapper.mapToMassProductOutputDto(products);
     }
 
+    //TODO: reconsider using body payload in DELETE method
     @Override
     @Transactional
     public void removeProductsList(RemoveProductInputDto removeProductInputDto) {
@@ -113,6 +117,9 @@ public class ProductServiceImpl implements ProductService {
         kafkaService.sendProductListToTopic(productsList, PRODUCT_REMOVED.name());
     }
 
+    //TODO: remove or change to removing just n products by name
+    //  because products in two services do not have same IDs, so they do not represent one real object
+    //  therefore, it is wrong and even pointless to do it with the use of ID
     @Override
     @Transactional
     public void removeProduct(String productId) {
@@ -123,6 +130,35 @@ public class ProductServiceImpl implements ProductService {
         productsList.add(product);
         kafkaService.sendProductListToTopic(productsList, PRODUCT_REMOVED.name());
         productRepository.deleteById(product.getId());
+    }
+
+    @Override
+    public List<PurchaseProductOutputDto> purchaseProducts(List<PurchaseProductInputDto> purchaseProductInputDtoList) {
+        purchaseProductInputDtoList
+                .forEach(validator::validatePurchaseProductInputDto);
+
+        List<ProductErrorDto> productErrorDtoList = new ArrayList<>();
+
+        Map<String, List<Product>> productNameToProductListMap = purchaseProductInputDtoList.stream()
+                .map(dto -> productMapper.mapToStringToProductListMap(dto, productErrorDtoList))
+                .collect(toSet())
+                .stream()
+                .collect(toMap(Map.Entry::getKey, Map.Entry::getValue));
+
+        if (!productErrorDtoList.isEmpty()) {
+            throw new OrderException(NOT_ALL_PRODUCTS_AVAILABLE.getMessage(), productErrorDtoList);
+        }
+
+        productNameToProductListMap.values().stream()
+                .flatMap(List::stream)
+                .forEach(product -> productRepository.deleteById(product.getId()));
+
+        return productNameToProductListMap.entrySet().stream()
+                .map(entry -> PurchaseProductOutputDto.builder()
+                        .name(entry.getKey())
+                        .quantity(entry.getValue().size())
+                        .build())
+                .toList();
     }
 
     private Stream<Product> saveProductMultipleTimes(AddProductInputDto addProductInputDto) {

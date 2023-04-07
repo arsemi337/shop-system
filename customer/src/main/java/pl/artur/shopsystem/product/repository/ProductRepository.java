@@ -1,6 +1,8 @@
 package pl.artur.shopsystem.product.repository;
 
 import jakarta.persistence.LockModeType;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Lock;
 import org.springframework.stereotype.Repository;
@@ -16,4 +18,6 @@ public interface ProductRepository extends JpaRepository<Product, UUID> {
     long countByType(Genre type);
     @Lock(LockModeType.PESSIMISTIC_READ)
     Optional<Product> findAllByName(String name);
+    Page<Product> findAllByName(String name, Pageable pageable);
+
 }

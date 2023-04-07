@@ -1,7 +1,6 @@
-DROP TABLE IF EXISTS order_products;
+DROP TABLE IF EXISTS products;
 DROP TABLE IF EXISTS orders;
 DROP TABLE IF EXISTS customers;
-DROP TABLE IF EXISTS products;
 
 CREATE TABLE customers (
   id UUID NOT NULL,
@@ -15,10 +14,9 @@ CREATE TABLE customers (
 
 CREATE TABLE orders (
   id UUID NOT NULL,
-   creation_time TIMESTAMP WITHOUT TIME ZONE,
    customer_id UUID,
-   date_time TIMESTAMP WITHOUT TIME ZONE,
-   cost DECIMAL,
+   creation_time TIMESTAMP WITHOUT TIME ZONE,
+   total_cost DECIMAL,
    CONSTRAINT pk_orders PRIMARY KEY (id)
 );
 
@@ -32,16 +30,8 @@ CREATE TABLE products (
    manufacturer VARCHAR(255),
    price DECIMAL,
    is_deleted BOOLEAN NOT NULL,
+   order_id UUID,
    CONSTRAINT pk_products PRIMARY KEY (id)
 );
 
-CREATE TABLE order_products (
-  quantity INTEGER,
-   product_id UUID NOT NULL,
-   order_id UUID NOT NULL,
-   CONSTRAINT pk_order_products PRIMARY KEY (product_id, order_id)
-);
-
-ALTER TABLE order_products ADD CONSTRAINT FK_ORDER_PRODUCTS_ON_ORDER FOREIGN KEY (order_id) REFERENCES orders (id);
-
-ALTER TABLE order_products ADD CONSTRAINT FK_ORDER_PRODUCTS_ON_PRODUCT FOREIGN KEY (product_id) REFERENCES products (id);
+ALTER TABLE products ADD CONSTRAINT FK_PRODUCTS_ON_ORDER FOREIGN KEY (order_id) REFERENCES orders (id);

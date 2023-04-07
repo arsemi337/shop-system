@@ -93,7 +93,7 @@ public class OrderIntegrationTest {
         assertEquals(orderProducts.size(), 1);
         assertEquals(orderProducts.get(0).getProduct(), product);
         assertEquals(orderProducts.get(0).getQuantity(), quantity);
-        assertEquals(orders.get(0).getCost(), product.getPrice().multiply(new BigDecimal(quantity)));
+        assertEquals(orders.get(0).getTotalCost(), product.getPrice().multiply(new BigDecimal(quantity)));
     }
 
     private Customer addCustomerToDatabase() {

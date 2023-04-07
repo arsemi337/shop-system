@@ -3,13 +3,13 @@ package pl.artur.shopsystem.product.model;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.Hibernate;
-import pl.artur.shopsystem.order.orderProduct.model.OrderProduct;
+import pl.artur.shopsystem.order.model.Order;
+//import pl.artur.shopsystem.order.orderProduct.model.OrderProduct;
 import product.model.Genre;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Objects;
-import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -31,8 +31,9 @@ public class Product {
     private BigDecimal price;
     private boolean isDeleted = Boolean.FALSE;
 
-    @OneToMany(mappedBy = "product")
-    Set<OrderProduct> orderProducts;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "order_id")
+    private Order order;
 
     @Override
     public boolean equals(Object o) {

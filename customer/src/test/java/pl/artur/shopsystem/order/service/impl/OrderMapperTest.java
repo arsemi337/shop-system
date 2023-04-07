@@ -12,7 +12,6 @@ import pl.artur.shopsystem.order.dto.OrderOutputDto;
 import pl.artur.shopsystem.order.model.Order;
 import pl.artur.shopsystem.order.orderProduct.dto.OrderProductOutputDto;
 import pl.artur.shopsystem.product.model.Product;
-import pl.artur.shopsystem.order.orderProduct.model.OrderProduct;
 import product.model.Genre;
 import supplier.TimeSupplier;
 
@@ -77,8 +76,8 @@ public class OrderMapperTest {
                 .manufacturer("Greg")
                 .price(new BigDecimal("9.99"))
                 .build();
-        List<ProductQuantity> productQuantities = new ArrayList<>();
-        productQuantities.add(ProductQuantity.builder()
+        List<ProductInfo> productQuantities = new ArrayList<>();
+        productQuantities.add(ProductInfo.builder()
                 .product(product)
                 .quantity(1)
                 .build());
@@ -89,8 +88,8 @@ public class OrderMapperTest {
                 .build();
         Order order = Order.builder()
                 .customer(customer)
-                .dateTime(timeSupplier.get())
-                .cost(new BigDecimal("479.99"))
+                .creationTime(timeSupplier.get())
+                .totalCost(new BigDecimal("479.99"))
                 .build();
 
         // when
@@ -116,8 +115,8 @@ public class OrderMapperTest {
                 .manufacturer("Greg")
                 .price(new BigDecimal("9.99"))
                 .build();
-        List<ProductQuantity> productQuantities = new ArrayList<>();
-        productQuantities.add(ProductQuantity.builder()
+        List<ProductInfo> productQuantities = new ArrayList<>();
+        productQuantities.add(ProductInfo.builder()
                 .product(product)
                 .quantity(1)
                 .build());
@@ -149,7 +148,7 @@ public class OrderMapperTest {
 
         // then
         Assertions.assertEquals(order.getCustomer(), customer);
-        assertEquals(order.getCost(), totalCost);
-        assertEquals(order.getDateTime(), timeSupplier.get());
+        assertEquals(order.getTotalCost(), totalCost);
+        assertEquals(order.getCreationTime(), timeSupplier.get());
     }
 }

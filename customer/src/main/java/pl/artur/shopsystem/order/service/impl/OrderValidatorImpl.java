@@ -36,6 +36,6 @@ public class OrderValidatorImpl implements OrderValidator {
     }
 
     private boolean isAnyBlank(OrderProductInputDto inputDto) {
-        return StringUtils.isAnyBlank(inputDto.productId(), inputDto.quantity());
+        return StringUtils.isAnyBlank(inputDto.productName(), inputDto.quantity());
     }
 }

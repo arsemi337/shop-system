@@ -1,26 +1,34 @@
 package pl.artur.shopsystem.order.service.impl;
 
+import exception.order.ProductErrorDto;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import pl.artur.shopsystem.customer.model.Customer;
 import pl.artur.shopsystem.order.dto.OrderInputDto;
 import pl.artur.shopsystem.order.dto.OrderOutputDto;
 import pl.artur.shopsystem.order.model.Order;
 import pl.artur.shopsystem.order.orderProduct.dto.OrderProductInputDto;
 import pl.artur.shopsystem.order.orderProduct.dto.OrderProductOutputDto;
-import pl.artur.shopsystem.order.orderProduct.model.OrderProduct;
-import pl.artur.shopsystem.order.orderProduct.model.OrderProductKey;
+import pl.artur.shopsystem.product.model.Product;
+import pl.artur.shopsystem.product.repository.ProductRepository;
 import supplier.TimeSupplier;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
 
 public class OrderMapper {
 
     private final TimeSupplier timeSupplier;
+    private final ProductRepository productRepository;
+    private final OrderParser parser;
 
-    public OrderMapper(TimeSupplier timeSupplier) {
+    public OrderMapper(TimeSupplier timeSupplier, ProductRepository productRepository, OrderParser parser) {
         this.timeSupplier = timeSupplier;
+        this.productRepository = productRepository;
+        this.parser = parser;
     }
 
     OrderOutputDto mapToOrderOutputDto(Customer customer, List<OrderProductOutputDto> purchasedProducts, BigDecimal totalCost) {
@@ -33,38 +41,22 @@ public class OrderMapper {
                 .build();
     }
 
-    List<OrderProduct> mapToOrderProducts(List<ProductQuantity> productQuantities, Order order) {
-        return productQuantities
-                .stream()
-                .map(productQuantity -> OrderProduct.builder()
-                        .orderProductKey(
-                                OrderProductKey.builder()
-                                        .productId(productQuantity.product().getId())
-                                        .orderId(order.getId())
-                                        .build())
-                        .product(productQuantity.product())
-                        .order(order)
-                        .quantity(productQuantity.quantity())
+    List<OrderProductOutputDto> mapToOrderProductOutputDtoList(
+            Map<ProductInfo, List<Product>> productInfoToProductListMap) {
+        return productInfoToProductListMap.entrySet().stream()
+                .map(entry -> OrderProductOutputDto.builder()
+                        .name(entry.getKey().name())
+                        .type(entry.getKey().type())
+                        .manufacturer(entry.getKey().manufacturer())
+                        .price(entry.getKey().price())
+                        .quantity(entry.getValue().size())
                         .build())
                 .toList();
     }
 
-    List<OrderProductOutputDto> mapToOrderProductOutputDtoList(List<ProductQuantity> productQuantities) {
-        return productQuantities
-                .stream()
-                .map(productQuantity -> OrderProductOutputDto.builder()
-                        .name(productQuantity.product().getName())
-                        .type(productQuantity.product().getType())
-                        .manufacturer(productQuantity.product().getManufacturer())
-                        .price(productQuantity.product().getPrice())
-                        .quantity(productQuantity.quantity())
-                        .build())
-                .toList();
-    }
-
-    List<ProductQuantity> mapToProductQuantities(
+    List<ProductInfo> mapToProductQuantities(
             OrderInputDto orderInputDto,
-            Function<OrderProductInputDto, Optional<ProductQuantity>> mapToOptionalOfProductQuantity) {
+            Function<OrderProductInputDto, Optional<ProductInfo>> mapToOptionalOfProductQuantity) {
         return orderInputDto.orderProducts()
                 .stream()
                 .map(mapToOptionalOfProductQuantity)
@@ -75,8 +67,38 @@ public class OrderMapper {
     Order mapToOrder(Customer customer, BigDecimal totalCost) {
         return Order.builder()
                 .customer(customer)
-                .cost(totalCost)
-                .dateTime(timeSupplier.get())
+                .totalCost(totalCost)
+                .creationTime(timeSupplier.get())
                 .build();
+    }
+
+    Map.Entry<ProductInfo, List<Product>> mapToProductInfoToProductListMap(
+            OrderProductInputDto orderProductInputDto,
+            List<ProductErrorDto> errorDtoList) {
+        int quantity = parser.parseQuantity(orderProductInputDto.quantity());
+        String productName = orderProductInputDto.productName();
+
+        Page<Product> productPage = productRepository.findAllByName(
+                productName,
+                PageRequest.of(0, quantity));
+
+        List<Product> products = productPage.get().toList();
+
+        if (products.size() < quantity) {
+            errorDtoList.add(
+                    ProductErrorDto.builder()
+                            .productName(productName)
+                            .remaining(products.size())
+                            .build());
+        }
+
+        ProductInfo productInfo = ProductInfo.builder()
+                .name(products.get(0).getName())
+                .type(products.get(0).getType())
+                .manufacturer(products.get(0).getManufacturer())
+                .price(products.get(0).getPrice())
+                .build();
+
+        return Map.entry(productInfo, products);
     }
 }

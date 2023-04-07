@@ -49,4 +49,10 @@ public class ProductController {
     void removeProduct(@PathVariable String productId) {
         productService.removeProduct(productId);
     }
+
+    @PostMapping("/orders")
+    ResponseEntity<List<PurchaseProductOutputDto>> purchaseProducts(
+            @RequestBody List<PurchaseProductInputDto> purchaseProductInputDtoList) {
+        return ResponseEntity.ok(productService.purchaseProducts(purchaseProductInputDtoList));
+    }
 }

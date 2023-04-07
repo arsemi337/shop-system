@@ -5,6 +5,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 import pl.artur.shopsystem.product.dto.AddProductInputDto;
 import pl.artur.shopsystem.product.dto.AlterProductInputDto;
+import pl.artur.shopsystem.product.dto.PurchaseProductInputDto;
 import pl.artur.shopsystem.product.model.Product;
 import pl.artur.shopsystem.product.repository.ProductRepository;
 import pl.artur.shopsystem.product.service.ProductParser;
@@ -60,6 +61,13 @@ public class ProductValidatorImpl implements ProductValidator {
         validatePrice(alterProductInputDto.price());
     }
 
+    @Override
+    public void validatePurchaseProductInputDto(PurchaseProductInputDto purchaseProductInputDto) {
+        if (isAnyBlank(purchaseProductInputDto)) {
+            throw new IllegalArgumentException(INPUT_DATA_CONTAINS_BLANK_FIELDS.getMessage());
+        }
+    }
+
     private boolean isAnyBlank(AddProductInputDto addProductInputDto) {
         return StringUtils.isAnyBlank(
                 addProductInputDto.name(),
@@ -74,6 +82,12 @@ public class ProductValidatorImpl implements ProductValidator {
                 alterProductInputDto.type(),
                 alterProductInputDto.manufacturer(),
                 alterProductInputDto.price());
+    }
+
+    private boolean isAnyBlank(PurchaseProductInputDto purchaseProductInputDto) {
+        return StringUtils.isAnyBlank(
+                purchaseProductInputDto.productName(),
+                purchaseProductInputDto.quantity());
     }
 
     private void validateProductExistence(String name) {

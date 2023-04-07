@@ -1,16 +1,20 @@
 package pl.artur.shopsystem.order.service.impl;
 
-import static exception.OrderExceptionMessages.PRODUCT_QUANTITY_IS_NOT_NUMBER;
+import static exception.ProductExceptionMessages.NUMBER_IS_NOT_POSITIVE;
+import static exception.ProductExceptionMessages.NUMBER_NOT_A_NUMBER;
 
 public class OrderParser {
 
-    int parseQuantity(String quantity) {
-        int quantityNumber;
+    int parseQuantity(String stringQuantity) {
+        int quantity;
         try {
-            quantityNumber = Integer.parseInt(quantity);
+            quantity = Integer.parseInt(stringQuantity);
+            if (quantity <= 0) {
+                throw new IllegalArgumentException(NUMBER_IS_NOT_POSITIVE.getMessage() + quantity);
+            }
         } catch (NumberFormatException e) {
-            throw new NumberFormatException(PRODUCT_QUANTITY_IS_NOT_NUMBER.getMessage() + quantity);
+            throw new NumberFormatException(NUMBER_NOT_A_NUMBER.getMessage() + stringQuantity);
         }
-        return quantityNumber;
+        return quantity;
     }
 }

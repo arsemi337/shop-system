@@ -1,7 +1,8 @@
 package pl.artur.shopsystem.exception;
 
 import exception.ErrorResponse;
-import org.springframework.http.HttpStatus;
+import exception.order.OrderErrorResponse;
+import exception.order.OrderException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -25,6 +26,17 @@ public class ControllerExceptionHandler {
                 .message(e.getMessage())
                 .errorTime(timeSupplier.get())
                 .build();
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+        return ResponseEntity.status(BAD_REQUEST).body(errorResponse);
+    }
+
+    @ExceptionHandler
+    ResponseEntity<OrderErrorResponse> purchaseExceptionHandler(OrderException e) {
+        OrderErrorResponse errorResponse = OrderErrorResponse.builder()
+                .statusCode(BAD_REQUEST.value())
+                .message(e.getMessage())
+                .errorTime(timeSupplier.get())
+                .productsFailedToBePurchase(e.getErrorDtoList())
+                .build();
+        return ResponseEntity.status(BAD_REQUEST).body(errorResponse);
     }
 }

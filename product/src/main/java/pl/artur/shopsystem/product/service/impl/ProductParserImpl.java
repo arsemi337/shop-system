@@ -4,6 +4,7 @@ import org.springframework.stereotype.Component;
 import pl.artur.shopsystem.product.service.ProductParser;
 
 import static exception.ProductExceptionMessages.NUMBER_IS_NOT_POSITIVE;
+import static exception.ProductExceptionMessages.NUMBER_NOT_A_NUMBER;
 
 @Component
 public class ProductParserImpl implements ProductParser {
@@ -20,5 +21,19 @@ public class ProductParserImpl implements ProductParser {
             number = 1;
         }
         return number;
+    }
+
+    @Override
+    public int parsePurchaseQuantity(String stringQuantity) {
+        int quantity;
+        try {
+            quantity = Integer.parseInt(stringQuantity);
+            if (quantity <= 0) {
+                throw new IllegalArgumentException(NUMBER_IS_NOT_POSITIVE.getMessage() + quantity);
+            }
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException(NUMBER_NOT_A_NUMBER.getMessage() + stringQuantity);
+        }
+        return quantity;
     }
 }

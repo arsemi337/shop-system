@@ -14,4 +14,5 @@ public interface ProductService {
     MassProductOutputDto updateProduct(AlterProductInputDto alterProductInputDto);
     void removeProductsList(RemoveProductInputDto removeProductInputDto);
     void removeProduct(String productId);
+    List<PurchaseProductOutputDto> purchaseProducts(List<PurchaseProductInputDto> purchaseProductInputDtoList);
 }

@@ -3,7 +3,8 @@ package pl.artur.shopsystem.order.model;
 import jakarta.persistence.*;
 import lombok.*;
 import pl.artur.shopsystem.customer.model.Customer;
-import pl.artur.shopsystem.order.orderProduct.model.OrderProduct;
+//import pl.artur.shopsystem.order.orderProduct.model.OrderProduct;
+import pl.artur.shopsystem.product.model.Product;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -25,11 +26,11 @@ public class Order {
     @ManyToOne
     @JoinColumn(name = "customer_id")
     private Customer customer;
-    private LocalDateTime dateTime;
-    private BigDecimal cost;
+    private LocalDateTime creationTime;
+    private BigDecimal totalCost;
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "order")
-    Set<OrderProduct> orderProducts;
+    Set<Product> products;
 
     @Override
     public int hashCode() {

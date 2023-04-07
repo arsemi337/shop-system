@@ -4,6 +4,6 @@ import lombok.Builder;
 
 @Builder
 public record OrderProductInputDto(
-        String productId,
+        String productName,
         String quantity) {
 }

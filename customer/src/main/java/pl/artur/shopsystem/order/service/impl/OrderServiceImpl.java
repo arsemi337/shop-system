@@ -1,15 +1,13 @@
 package pl.artur.shopsystem.order.service.impl;
 
+import exception.order.ProductErrorDto;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import pl.artur.shopsystem.order.orderProduct.dto.OrderProductInputDto;
 import pl.artur.shopsystem.customer.model.Customer;
 import pl.artur.shopsystem.customer.repository.CustomerRepository;
 import pl.artur.shopsystem.order.dto.OrderInputDto;
 import pl.artur.shopsystem.order.dto.OrderOutputDto;
 import pl.artur.shopsystem.order.model.Order;
-import pl.artur.shopsystem.order.orderProduct.model.OrderProduct;
-import pl.artur.shopsystem.order.orderProduct.repository.OrderProductRepository;
 import pl.artur.shopsystem.order.repository.OrderRepository;
 import pl.artur.shopsystem.order.service.OrderService;
 import pl.artur.shopsystem.order.service.OrderValidator;
@@ -18,38 +16,31 @@ import pl.artur.shopsystem.product.repository.ProductRepository;
 import supplier.TimeSupplier;
 
 import java.math.BigDecimal;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 import static exception.CustomerExceptionMessages.NO_CUSTOMER_BY_EMAIL_FOUND;
-import static exception.OrderExceptionMessages.PRODUCT_NOT_FOUND;
+import static java.util.stream.Collectors.toMap;
+import static java.util.stream.Collectors.toSet;
 
 @Service
 public class OrderServiceImpl implements OrderService {
 
     private final OrderValidator validator;
-    private final OrderParser parser;
     private final CustomerRepository customerRepository;
     private final ProductRepository productRepository;
     private final OrderRepository orderRepository;
-    private final OrderProductRepository orderProductRepository;
     private final OrderMapper mapper;
 
     public OrderServiceImpl(OrderValidator validator,
                             CustomerRepository customerRepository,
                             ProductRepository productRepository,
                             OrderRepository orderRepository,
-                            OrderProductRepository orderProductRepository,
                             TimeSupplier timeSupplier) {
         this.validator = validator;
-        this.parser = new OrderParser();
         this.customerRepository = customerRepository;
         this.productRepository = productRepository;
         this.orderRepository = orderRepository;
-        this.orderProductRepository = orderProductRepository;
-        this.mapper = new OrderMapper(timeSupplier);
+        this.mapper = new OrderMapper(timeSupplier, productRepository, new OrderParser());
     }
 
     @Override
@@ -62,55 +53,46 @@ public class OrderServiceImpl implements OrderService {
         Customer customer = customerRepository.findById(customerId)
                 .orElseThrow(() -> new NoSuchElementException(NO_CUSTOMER_BY_EMAIL_FOUND.getMessage()));
 
-        // Create a list of objects, each of which contains a desired product and its quantity
-        List<ProductQuantity> productQuantities = mapper.mapToProductQuantities(
-                orderInputDto,
-                this::createProductQuantity);
+        List<ProductErrorDto> productErrorDtoList = new ArrayList<>();
+
+        Map<ProductInfo, List<Product>> productInfoToProductListMap = orderInputDto.orderProducts().stream()
+                .map(dto -> mapper.mapToProductInfoToProductListMap(dto, productErrorDtoList))
+                .collect(toSet())
+                .stream()
+                .collect(toMap(Map.Entry::getKey, Map.Entry::getValue));
 
         // Calculate total order cost
-        BigDecimal totalCost = calculateTotalCost(productQuantities);
+        BigDecimal totalCost = calculateTotalCost(productInfoToProductListMap);
 
         // Create order object and save it in a database
         Order order = mapper.mapToOrder(customer, totalCost);
         orderRepository.save(order);
 
-        // Create OrderProduct objects and save them in a database
-        List<OrderProduct> orderProducts = mapper.mapToOrderProducts(productQuantities, order);
-        orderProducts.forEach(orderProductRepository::save);
+        productInfoToProductListMap.values().stream()
+                .flatMap(List::stream)
+                .forEach(product -> {
+                    product.setOrder(order);
+                    product.setDeleted(true);
+                    productRepository.save(product);
+                });
 
         return mapper.mapToOrderOutputDto(
                 customer,
-                mapper.mapToOrderProductOutputDtoList(productQuantities),
+                mapper.mapToOrderProductOutputDtoList(productInfoToProductListMap),
                 totalCost);
     }
 
-    private BigDecimal calculateTotalCost(List<ProductQuantity> productQuantities) {
-        BigDecimal totalCost = new BigDecimal(0);
-        BigDecimal quantity;
-        BigDecimal price;
+    private BigDecimal calculateTotalCost(Map<ProductInfo, List<Product>> productInfoToProductListMap) {
+        final BigDecimal[] totalCost = {new BigDecimal(0)};
 
-        for (ProductQuantity productQuantity : productQuantities) {
-            quantity = new BigDecimal(productQuantity.quantity());
-            price = productQuantity.product().getPrice();
+        productInfoToProductListMap.forEach((key, value) -> {
+            BigDecimal quantity = new BigDecimal(value.size());
+            BigDecimal price = key.price();
 
-            BigDecimal productCost = price.multiply(quantity);
-            totalCost = totalCost.add(productCost);
-        }
-        return totalCost;
-    }
+            BigDecimal productTotalCos = price.multiply(quantity);
+            totalCost[0] = totalCost[0].add(productTotalCos);
+        });
 
-    private Optional<ProductQuantity> createProductQuantity(OrderProductInputDto inputDto) {
-        UUID uuid = UUID.fromString(inputDto.productId());
-        Product product = productRepository.findById(uuid)
-                .orElseThrow(() -> new NoSuchElementException(PRODUCT_NOT_FOUND.getMessage()));
-
-        int quantity = parser.parseQuantity(inputDto.quantity());
-        validator.validateQuantity(quantity);
-
-        ProductQuantity productQuantity = ProductQuantity.builder()
-                .product(product)
-                .quantity(quantity)
-                .build();
-        return Optional.of(productQuantity);
+        return totalCost[0];
     }
 }
