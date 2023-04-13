@@ -1,9 +1,9 @@
-package pl.artur.shopsystem.product.dto;
+package order;
 
 import lombok.Builder;
 
 @Builder
-public record PurchaseProductOutputDto(
+public record OrderProductOutputDto(
         String name,
         int quantity
 ) {

@@ -1,8 +1,8 @@
 package pl.artur.shopsystem.product.service;
 
+import order.OrderProductInputDto;
 import pl.artur.shopsystem.product.dto.AddProductInputDto;
 import pl.artur.shopsystem.product.dto.AlterProductInputDto;
-import pl.artur.shopsystem.product.dto.PurchaseProductInputDto;
 
 import java.util.List;
 
@@ -11,5 +11,5 @@ public interface ProductValidator {
     void validateNumberOfProductsToBeAdded(List<AddProductInputDto> addProductInputDtoList);
     void validateAddProductInputDto(AddProductInputDto addProductInputDto);
     void validateAlterProductInputDto(AlterProductInputDto alterProductInputDto);
-    void validatePurchaseProductInputDto(PurchaseProductInputDto purchaseProductInputDto);
+    void validatePurchaseProductInputDto(OrderProductInputDto orderProductInputDto);
 }

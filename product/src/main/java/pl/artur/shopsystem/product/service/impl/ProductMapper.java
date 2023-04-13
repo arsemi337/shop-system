@@ -1,12 +1,12 @@
 package pl.artur.shopsystem.product.service.impl;
 
 import exception.order.ProductErrorDto;
+import order.OrderProductInputDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import pl.artur.shopsystem.product.dto.AddProductInputDto;
 import pl.artur.shopsystem.product.dto.MassProductOutputDto;
 import pl.artur.shopsystem.product.dto.ProductOutputDto;
-import pl.artur.shopsystem.product.dto.PurchaseProductInputDto;
 import pl.artur.shopsystem.product.model.Product;
 import pl.artur.shopsystem.product.repository.ProductRepository;
 import pl.artur.shopsystem.product.service.ProductParser;
@@ -72,10 +72,10 @@ class ProductMapper {
     }
 
     Map.Entry<String, List<Product>> mapToStringToProductListMap(
-            PurchaseProductInputDto purchaseProductInputDto,
+            OrderProductInputDto orderProductInputDto,
             List<ProductErrorDto> errorDtoList) {
-        int quantity = parser.parsePurchaseQuantity(purchaseProductInputDto.quantity());
-        String productName = purchaseProductInputDto.productName();
+        int quantity = parser.parsePurchaseQuantity(orderProductInputDto.quantity());
+        String productName = orderProductInputDto.productName();
 
         Page<Product> productPage = productRepository.findAllByName(
                 productName,
@@ -91,6 +91,6 @@ class ProductMapper {
                             .build());
         }
 
-        return Map.entry(purchaseProductInputDto.productName(), products);
+        return Map.entry(orderProductInputDto.productName(), products);
     }
 }

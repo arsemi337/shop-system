@@ -3,6 +3,8 @@ package pl.artur.shopsystem.product.controller;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import order.OrderProductInputDto;
+import order.OrderProductOutputDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -51,8 +53,8 @@ public class ProductController {
     }
 
     @PostMapping("/orders")
-    ResponseEntity<List<PurchaseProductOutputDto>> purchaseProducts(
-            @RequestBody List<PurchaseProductInputDto> purchaseProductInputDtoList) {
-        return ResponseEntity.ok(productService.purchaseProducts(purchaseProductInputDtoList));
+    ResponseEntity<List<OrderProductOutputDto>> purchaseProducts(
+            @RequestBody List<OrderProductInputDto> orderProductInputDtoList) {
+        return ResponseEntity.ok(productService.purchaseProducts(orderProductInputDtoList));
     }
 }

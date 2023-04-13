@@ -1,24 +1,33 @@
 package pl.artur.shopsystem.order.service.impl;
 
+import exception.order.OrderErrorResponse;
+import exception.order.OrderException;
 import exception.order.ProductErrorDto;
+import order.OrderProductOutputDto;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.reactive.function.BodyInserters;
+import org.springframework.web.reactive.function.client.WebClient;
 import pl.artur.shopsystem.customer.model.Customer;
 import pl.artur.shopsystem.customer.repository.CustomerRepository;
 import pl.artur.shopsystem.order.dto.OrderInputDto;
 import pl.artur.shopsystem.order.dto.OrderOutputDto;
 import pl.artur.shopsystem.order.model.Order;
+import pl.artur.shopsystem.order.orderProduct.dto.OrderProductInputDto;
 import pl.artur.shopsystem.order.repository.OrderRepository;
 import pl.artur.shopsystem.order.service.OrderService;
 import pl.artur.shopsystem.order.service.OrderValidator;
 import pl.artur.shopsystem.product.model.Product;
 import pl.artur.shopsystem.product.repository.ProductRepository;
+import reactor.core.publisher.Mono;
 import supplier.TimeSupplier;
 
 import java.math.BigDecimal;
 import java.util.*;
 
 import static exception.CustomerExceptionMessages.NO_CUSTOMER_BY_EMAIL_FOUND;
+import static exception.order.OrderExceptionMessages.NOT_ALL_PRODUCTS_AVAILABLE;
 import static java.util.stream.Collectors.toMap;
 import static java.util.stream.Collectors.toSet;
 
@@ -30,16 +39,19 @@ public class OrderServiceImpl implements OrderService {
     private final ProductRepository productRepository;
     private final OrderRepository orderRepository;
     private final OrderMapper mapper;
+    private final WebClient webClient;
 
     public OrderServiceImpl(OrderValidator validator,
                             CustomerRepository customerRepository,
                             ProductRepository productRepository,
                             OrderRepository orderRepository,
-                            TimeSupplier timeSupplier) {
+                            TimeSupplier timeSupplier,
+                            WebClient webClient) {
         this.validator = validator;
         this.customerRepository = customerRepository;
         this.productRepository = productRepository;
         this.orderRepository = orderRepository;
+        this.webClient = webClient;
         this.mapper = new OrderMapper(timeSupplier, productRepository, new OrderParser());
     }
 
@@ -60,6 +72,31 @@ public class OrderServiceImpl implements OrderService {
                 .collect(toSet())
                 .stream()
                 .collect(toMap(Map.Entry::getKey, Map.Entry::getValue));
+
+        if (!productErrorDtoList.isEmpty()) {
+            throw new OrderException(NOT_ALL_PRODUCTS_AVAILABLE.getMessage(), productErrorDtoList);
+        }
+
+        List<OrderProductInputDto> orderProducts = productInfoToProductListMap.entrySet().stream()
+                .map(entry -> OrderProductInputDto.builder()
+                        .productName(entry.getKey().name())
+                        .quantity(String.valueOf(entry.getValue().size()))
+                        .build())
+                .toList();
+
+        webClient.post()
+                .uri("http://localhost:8085/api/v1/products/orders")
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(BodyInserters.fromValue(orderProducts))
+                .retrieve()
+                .onStatus(httpStatusCode -> httpStatusCode.value() != 200, clientResponse ->
+                        clientResponse.bodyToMono(OrderErrorResponse.class)
+                                .flatMap(error ->
+                                        Mono.error(new OrderException(error.message(), error.productsFailedToBePurchase())))
+                )
+                .bodyToMono(OrderProductOutputDto[].class)
+                .log()
+                .block();
 
         // Calculate total order cost
         BigDecimal totalCost = calculateTotalCost(productInfoToProductListMap);

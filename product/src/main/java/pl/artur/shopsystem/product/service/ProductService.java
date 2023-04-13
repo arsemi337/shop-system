@@ -1,5 +1,7 @@
 package pl.artur.shopsystem.product.service;
 
+import order.OrderProductInputDto;
+import order.OrderProductOutputDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import pl.artur.shopsystem.product.dto.*;
@@ -14,5 +16,5 @@ public interface ProductService {
     MassProductOutputDto updateProduct(AlterProductInputDto alterProductInputDto);
     void removeProductsList(RemoveProductInputDto removeProductInputDto);
     void removeProduct(String productId);
-    List<PurchaseProductOutputDto> purchaseProducts(List<PurchaseProductInputDto> purchaseProductInputDtoList);
+    List<OrderProductOutputDto> purchaseProducts(List<OrderProductInputDto> orderProductInputDtoList);
 }

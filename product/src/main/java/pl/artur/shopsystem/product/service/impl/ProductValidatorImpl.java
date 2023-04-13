@@ -1,11 +1,11 @@
 package pl.artur.shopsystem.product.service.impl;
 
+import order.OrderProductInputDto;
 import org.apache.commons.lang3.EnumUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 import pl.artur.shopsystem.product.dto.AddProductInputDto;
 import pl.artur.shopsystem.product.dto.AlterProductInputDto;
-import pl.artur.shopsystem.product.dto.PurchaseProductInputDto;
 import pl.artur.shopsystem.product.model.Product;
 import pl.artur.shopsystem.product.repository.ProductRepository;
 import pl.artur.shopsystem.product.service.ProductParser;
@@ -62,8 +62,8 @@ public class ProductValidatorImpl implements ProductValidator {
     }
 
     @Override
-    public void validatePurchaseProductInputDto(PurchaseProductInputDto purchaseProductInputDto) {
-        if (isAnyBlank(purchaseProductInputDto)) {
+    public void validatePurchaseProductInputDto(OrderProductInputDto orderProductInputDto) {
+        if (isAnyBlank(orderProductInputDto)) {
             throw new IllegalArgumentException(INPUT_DATA_CONTAINS_BLANK_FIELDS.getMessage());
         }
     }
@@ -84,10 +84,10 @@ public class ProductValidatorImpl implements ProductValidator {
                 alterProductInputDto.price());
     }
 
-    private boolean isAnyBlank(PurchaseProductInputDto purchaseProductInputDto) {
+    private boolean isAnyBlank(OrderProductInputDto orderProductInputDto) {
         return StringUtils.isAnyBlank(
-                purchaseProductInputDto.productName(),
-                purchaseProductInputDto.quantity());
+                orderProductInputDto.productName(),
+                orderProductInputDto.quantity());
     }
 
     private void validateProductExistence(String name) {

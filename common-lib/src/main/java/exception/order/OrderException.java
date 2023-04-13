@@ -1,10 +1,12 @@
 package exception.order;
 
 import lombok.Getter;
+import lombok.Setter;
 
 import java.util.List;
 
 @Getter
+@Setter
 public class OrderException extends RuntimeException {
 
     private final List<ProductErrorDto> errorDtoList;

@@ -2,6 +2,8 @@ package pl.artur.shopsystem.product.service.impl;
 
 import exception.order.OrderException;
 import exception.order.ProductErrorDto;
+import order.OrderProductInputDto;
+import order.OrderProductOutputDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -133,13 +135,13 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<PurchaseProductOutputDto> purchaseProducts(List<PurchaseProductInputDto> purchaseProductInputDtoList) {
-        purchaseProductInputDtoList
+    public List<OrderProductOutputDto> purchaseProducts(List<OrderProductInputDto> orderProductInputDtoList) {
+        orderProductInputDtoList
                 .forEach(validator::validatePurchaseProductInputDto);
 
         List<ProductErrorDto> productErrorDtoList = new ArrayList<>();
 
-        Map<String, List<Product>> productNameToProductListMap = purchaseProductInputDtoList.stream()
+        Map<String, List<Product>> productNameToProductListMap = orderProductInputDtoList.stream()
                 .map(dto -> productMapper.mapToStringToProductListMap(dto, productErrorDtoList))
                 .collect(toSet())
                 .stream()
@@ -154,7 +156,7 @@ public class ProductServiceImpl implements ProductService {
                 .forEach(product -> productRepository.deleteById(product.getId()));
 
         return productNameToProductListMap.entrySet().stream()
-                .map(entry -> PurchaseProductOutputDto.builder()
+                .map(entry -> OrderProductOutputDto.builder()
                         .name(entry.getKey())
                         .quantity(entry.getValue().size())
                         .build())

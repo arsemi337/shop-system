@@ -92,12 +92,19 @@ public class OrderMapper {
                             .build());
         }
 
-        ProductInfo productInfo = ProductInfo.builder()
-                .name(products.get(0).getName())
-                .type(products.get(0).getType())
-                .manufacturer(products.get(0).getManufacturer())
-                .price(products.get(0).getPrice())
-                .build();
+        ProductInfo productInfo;
+        if (products.size() > 0) {
+             productInfo = ProductInfo.builder()
+                    .name(products.get(0).getName())
+                    .type(products.get(0).getType())
+                    .manufacturer(products.get(0).getManufacturer())
+                    .price(products.get(0).getPrice())
+                    .build();
+        } else {
+            productInfo = ProductInfo.builder()
+                    .name(productName)
+                    .build();
+        }
 
         return Map.entry(productInfo, products);
     }
