@@ -37,7 +37,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ProductOutputDto fetchProductById(String id) {
         UUID productId = UUID.fromString(id);
-        return productRepository.findById(productId)
+        return productRepository.findByIdAndIsDeleted(productId, false)
                 .map(productMapper::mapToProductOutputDto)
                 .orElseThrow(() -> new NoSuchElementException(NO_PRODUCT_FOUND.getMessage()));
     }
@@ -46,7 +46,7 @@ public class ProductServiceImpl implements ProductService {
     public ProductTypeNumberOutputDto getNumberOfProductsByGenre(Genre type) {
         return ProductTypeNumberOutputDto.builder()
                 .type(type)
-                .productsNumber(productRepository.countByType(type))
+                .productsNumber(productRepository.countByTypeAndIsDeleted(type, false))
                 .build();
     }
 

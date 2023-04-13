@@ -6,7 +6,9 @@ import org.springframework.data.domain.PageRequest;
 import pl.artur.shopsystem.customer.model.Customer;
 import pl.artur.shopsystem.order.dto.OrderInputDto;
 import pl.artur.shopsystem.order.dto.OrderOutputDto;
+import pl.artur.shopsystem.order.dto.ProductOrderOutput;
 import pl.artur.shopsystem.order.model.Order;
+import pl.artur.shopsystem.order.model.ProductOrderSummary;
 import pl.artur.shopsystem.order.orderProduct.dto.OrderProductInputDto;
 import pl.artur.shopsystem.order.orderProduct.dto.OrderProductOutputDto;
 import pl.artur.shopsystem.product.model.Product;
@@ -78,9 +80,10 @@ public class OrderMapper {
         int quantity = parser.parseQuantity(orderProductInputDto.quantity());
         String productName = orderProductInputDto.productName();
 
-        Page<Product> productPage = productRepository.findAllByName(
+        Page<Product> productPage = productRepository.findAllByNameAndIsDeleted(
                 productName,
-                PageRequest.of(0, quantity));
+                false,
+                PageRequest.of(0,  quantity));
 
         List<Product> products = productPage.get().toList();
 
@@ -107,5 +110,14 @@ public class OrderMapper {
         }
 
         return Map.entry(productInfo, products);
+    }
+
+    public ProductOrderOutput mapToProductOrderOutput(ProductOrderSummary orderSummary) {
+        return ProductOrderOutput.builder()
+                .name(orderSummary.getName())
+                .type(orderSummary.getType())
+                .manufacturer(orderSummary.getManufacturer())
+                .number(orderSummary.getNumber())
+                .build();
     }
 }

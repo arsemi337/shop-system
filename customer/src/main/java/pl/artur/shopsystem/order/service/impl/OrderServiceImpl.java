@@ -4,6 +4,8 @@ import exception.order.OrderErrorResponse;
 import exception.order.OrderException;
 import exception.order.ProductErrorDto;
 import order.OrderProductOutputDto;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,6 +15,7 @@ import pl.artur.shopsystem.customer.model.Customer;
 import pl.artur.shopsystem.customer.repository.CustomerRepository;
 import pl.artur.shopsystem.order.dto.OrderInputDto;
 import pl.artur.shopsystem.order.dto.OrderOutputDto;
+import pl.artur.shopsystem.order.dto.ProductOrderOutput;
 import pl.artur.shopsystem.order.model.Order;
 import pl.artur.shopsystem.order.orderProduct.dto.OrderProductInputDto;
 import pl.artur.shopsystem.order.repository.OrderRepository;
@@ -117,6 +120,12 @@ public class OrderServiceImpl implements OrderService {
                 customer,
                 mapper.mapToOrderProductOutputDtoList(productInfoToProductListMap),
                 totalCost);
+    }
+
+    @Override
+    public Page<ProductOrderOutput> fetchOrdersSummary(Pageable pageable) {
+        return productRepository.findProductOrderSummary(pageable)
+                .map(mapper::mapToProductOrderOutput);
     }
 
     private BigDecimal calculateTotalCost(Map<ProductInfo, List<Product>> productInfoToProductListMap) {

@@ -13,8 +13,8 @@ import pl.artur.shopsystem.order.dto.OrderOutputDto;
 import pl.artur.shopsystem.order.model.Order;
 import pl.artur.shopsystem.order.orderProduct.dto.OrderProductInputDto;
 import pl.artur.shopsystem.order.orderProduct.dto.OrderProductOutputDto;
-import pl.artur.shopsystem.order.orderProduct.model.OrderProduct;
-import pl.artur.shopsystem.order.orderProduct.repository.OrderProductRepository;
+//import pl.artur.shopsystem.order.orderProduct.model.OrderProduct;
+//import pl.artur.shopsystem.order.orderProduct.repository.OrderProductRepository;
 import pl.artur.shopsystem.order.repository.OrderRepository;
 import pl.artur.shopsystem.order.service.OrderValidator;
 import pl.artur.shopsystem.product.model.Product;
@@ -49,8 +49,8 @@ public class OrderServiceTest {
     ProductRepository productRepository;
     @Mock
     OrderRepository orderRepository;
-    @Mock
-    OrderProductRepository orderProductRepository;
+//    @Mock
+//    OrderProductRepository orderProductRepository;
 
     @Test
     @DisplayName("when valid OrderInputDto is passed, an OrderOutputDto object should be returned")
@@ -75,7 +75,7 @@ public class OrderServiceTest {
                 .build();
         List<OrderProductInputDto> orderProducts = new ArrayList<>();
         orderProducts.add(OrderProductInputDto.builder()
-                .productId(productId.toString())
+//                .productId(productId.toString())
                 .quantity("10")
                 .build());
         OrderInputDto input = OrderInputDto.builder()
@@ -91,9 +91,9 @@ public class OrderServiceTest {
                 .quantity(10)
                 .build());
         when(customerRepository.findById(customerId)).thenReturn(Optional.of(customer));
-        when(productRepository.findById(productId)).thenReturn(Optional.of(product));
+        when(productRepository.findByIdAndIsDeleted(productId, false)).thenReturn(Optional.of(product));
         when(orderRepository.save(any(Order.class))).thenAnswer(answer -> answer.getArgument(0));
-        when(orderProductRepository.save(any(OrderProduct.class))).thenAnswer(answer -> answer.getArgument(0));
+//        when(orderProductRepository.save(any(OrderProduct.class))).thenAnswer(answer -> answer.getArgument(0));
 
         // when
         OrderOutputDto output = underTest.makeOrder(input);
@@ -105,8 +105,8 @@ public class OrderServiceTest {
         assertEquals(output.orderedProducts(), orderProductOutputDtoList);
         assertEquals(output.totalCost(), product.getPrice().multiply(new BigDecimal(10)));
         verify(customerRepository).findById(customerId);
-        verify(productRepository).findById(productId);
+        verify(productRepository).findByIdAndIsDeleted(productId, false);
         verify(orderRepository).save(any(Order.class));
-        verify(orderProductRepository).save(any(OrderProduct.class));
+//        verify(orderProductRepository).save(any(OrderProduct.class));
     }
 }
