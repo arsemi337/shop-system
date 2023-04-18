@@ -15,6 +15,7 @@ public enum ProductExceptionMessages {
     NUMBER_IS_NOT_POSITIVE("Entered products number is a non positive value: "),
     TOO_MUCH_PRODUCTS_TO_BE_ADDED("The total number of products to be added is to large: "),
     PRODUCT_IS_NOT_CONSISTENT("Entered product is not consistent with the already existing product "),
-    NOT_ENOUGH_PRODUCTS_TO_REMOVE("Entered products number to be removed is greater than total number of products in a database");
+    NOT_ENOUGH_PRODUCTS_TO_REMOVE("Entered products number to be removed is greater than total number of products in a database"),
+    FILTERING_PARAMETERS_NOT_COMPLETE("Not all filtering parameters were passed");
     private final String message;
 }

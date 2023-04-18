@@ -1,6 +1,5 @@
 package pl.artur.shopsystem.product.controller;
 
-import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import order.OrderProductInputDto;
@@ -29,14 +28,20 @@ public class ProductController {
     }
 
     @GetMapping
-    ResponseEntity<Page<ProductOutputDto>> fetchProductsList(@Parameter Pageable pageable) {
-        return ResponseEntity.ok(productService.fetchAllProducts(pageable));
+    ResponseEntity<Page<ProductOutputDto>> fetchProductsList(
+            @RequestParam(required = false) String field,
+            @RequestParam(required = false) String operation,
+            @RequestParam(required = false) String value,
+            Pageable pageable) {
+        return ResponseEntity.ok(productService.fetchAllProducts(field, operation, value, pageable));
     }
 
     @GetMapping("/{productId}")
     ResponseEntity<ProductOutputDto> fetchProductById(@PathVariable String productId) {
         return ResponseEntity.ok(productService.fetchProductById(productId));
     }
+
+
 
     @GetMapping("/type/{type}")
     ResponseEntity<ProductTypeNumberOutputDto> getNumberOfProductsByGenre(@PathVariable Genre type) {
@@ -51,7 +56,7 @@ public class ProductController {
     @DeleteMapping
     void removeProductsByName(
             @RequestParam String productName,
-            @RequestParam String productsNumber) {
+            @RequestParam(required = false) String productsNumber) {
         productService.removeProductsByName(productName, productsNumber);
     }
 

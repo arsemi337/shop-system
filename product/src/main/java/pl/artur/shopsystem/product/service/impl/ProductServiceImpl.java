@@ -13,6 +13,7 @@ import pl.artur.shopsystem.kafka.service.KafkaService;
 import pl.artur.shopsystem.product.dto.*;
 import pl.artur.shopsystem.product.model.Product;
 import pl.artur.shopsystem.product.repository.ProductRepository;
+import pl.artur.shopsystem.product.repository.ProductSpecification;
 import pl.artur.shopsystem.product.service.ProductParser;
 import pl.artur.shopsystem.product.service.ProductService;
 import pl.artur.shopsystem.product.service.ProductValidator;
@@ -25,7 +26,7 @@ import java.util.stream.IntStream;
 
 import static exception.ProductExceptionMessages.*;
 import static exception.order.OrderExceptionMessages.NOT_ALL_PRODUCTS_AVAILABLE;
-import static java.util.stream.Collectors.*;
+import static java.util.stream.Collectors.toMap;
 import static kafka.ProductHeader.*;
 
 @Service
@@ -67,9 +68,28 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Page<ProductOutputDto> fetchAllProducts(Pageable pageable) {
-        return productRepository.findAllByIsDeleted(pageable, false)
-                .map(productMapper::mapToProductOutputDto);
+    public Page<ProductOutputDto> fetchAllProducts(
+            String field,
+            String operation,
+            String value,
+            Pageable pageable) {
+        if (field == null && operation == null && value == null) {
+            return productRepository.findAllByIsDeleted(pageable, false)
+                    .map(productMapper::mapToProductOutputDto);
+        } else if (field != null && operation != null && value != null) {
+            SearchCriteria criteria = SearchCriteria.builder()
+                    .key(field)
+                    .operation(operation)
+                    .value(value)
+                    .build();
+            ProductSpecification spec = ProductSpecification.builder()
+                    .criteria(criteria)
+                    .build();
+            return productRepository.findAll(spec, pageable)
+                    .map(productMapper::mapToProductOutputDto);
+        } else {
+            throw new IllegalArgumentException(FILTERING_PARAMETERS_NOT_COMPLETE.getMessage());
+        }
     }
 
     @Override
@@ -112,7 +132,7 @@ public class ProductServiceImpl implements ProductService {
     @Transactional
     public void removeProductsByName(String productName, String productsNumber) {
         List<Product> products;
-        if (productsNumber.equals("all")) {
+        if (productsNumber == null) {
             products = productRepository.findAllByNameAndIsDeleted(productName, false);
         } else {
             int number = parser.parseProductsNumber(productsNumber);

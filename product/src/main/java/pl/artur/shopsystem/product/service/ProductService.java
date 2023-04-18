@@ -13,7 +13,7 @@ import java.util.List;
 public interface ProductService {
 
     List<MassProductOutputDto> addProducts(List<AddProductInputDto> alterProductInputDtoList);
-    Page<ProductOutputDto> fetchAllProducts(Pageable pageable);
+    Page<ProductOutputDto> fetchAllProducts(String field, String operation, String value, Pageable pageable);
     ProductOutputDto fetchProductById(String id);
     ProductTypeNumberOutputDto getNumberOfProductsByGenre(Genre genre);
     MassProductOutputDto updateAllSameProducts(AlterProductInputDto alterProductInputDto);

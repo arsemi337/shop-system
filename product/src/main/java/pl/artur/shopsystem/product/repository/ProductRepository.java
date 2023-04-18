@@ -3,6 +3,7 @@ package pl.artur.shopsystem.product.repository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 import pl.artur.shopsystem.product.model.Product;
 import product.model.Genre;
@@ -12,7 +13,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Repository
-public interface ProductRepository extends JpaRepository<Product, UUID> {
+public interface ProductRepository extends JpaRepository<Product, UUID>, JpaSpecificationExecutor<Product> {
 
     Page<Product> findAllByIsDeleted(Pageable pageable, boolean isDeleted);
     Optional<Product> findByIdAndIsDeleted(UUID id, boolean isDeleted);
