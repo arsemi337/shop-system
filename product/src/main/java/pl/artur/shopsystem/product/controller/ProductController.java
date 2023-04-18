@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import pl.artur.shopsystem.product.dto.*;
 import pl.artur.shopsystem.product.service.ProductService;
+import product.model.Genre;
 
 import java.util.List;
 
@@ -37,6 +38,11 @@ public class ProductController {
         return ResponseEntity.ok(productService.fetchProductById(productId));
     }
 
+    @GetMapping("/type/{type}")
+    ResponseEntity<ProductTypeNumberOutputDto> getNumberOfProductsByGenre(@PathVariable Genre type) {
+        return ResponseEntity.ok(productService.getNumberOfProductsByGenre(type));
+    }
+
     @PutMapping
     ResponseEntity<MassProductOutputDto> updateProduct(@RequestBody AlterProductInputDto alterProductInputDto) {
         return ResponseEntity.ok(productService.updateAllSameProducts(alterProductInputDto));
@@ -50,7 +56,7 @@ public class ProductController {
     }
 
     @PostMapping("/orders")
-    ResponseEntity<List<OrderProductOutputDto>> purchaseProducts(
+    ResponseEntity<List<OrderProductOutputDto>> orderProducts(
             @RequestBody List<OrderProductInputDto> orderProductInputDtoList) {
         return ResponseEntity.ok(productService.purchaseProducts(orderProductInputDtoList));
     }

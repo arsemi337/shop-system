@@ -41,7 +41,7 @@ public class OrderServiceImpl implements OrderService {
     private final CustomerRepository customerRepository;
     private final ProductRepository productRepository;
     private final OrderRepository orderRepository;
-    private final OrderMapper mapper;
+    private final OrderMapper orderMapper;
     private final WebClient webClient;
 
     public OrderServiceImpl(OrderValidator validator,
@@ -55,7 +55,7 @@ public class OrderServiceImpl implements OrderService {
         this.productRepository = productRepository;
         this.orderRepository = orderRepository;
         this.webClient = webClient;
-        this.mapper = new OrderMapper(timeSupplier, productRepository, new OrderParser());
+        this.orderMapper = new OrderMapper(timeSupplier, productRepository, new OrderParser());
     }
 
     @Override
@@ -71,7 +71,7 @@ public class OrderServiceImpl implements OrderService {
         List<ProductErrorDto> productErrorDtoList = new ArrayList<>();
 
         Map<ProductInfo, List<Product>> productInfoToProductListMap = orderInputDto.orderProducts().stream()
-                .map(dto -> mapper.mapToProductInfoToProductListMap(dto, productErrorDtoList))
+                .map(dto -> orderMapper.mapToProductInfoToProductListMap(dto, productErrorDtoList))
                 .collect(toSet())
                 .stream()
                 .collect(toMap(Map.Entry::getKey, Map.Entry::getValue));
@@ -105,7 +105,7 @@ public class OrderServiceImpl implements OrderService {
         BigDecimal totalCost = calculateTotalCost(productInfoToProductListMap);
 
         // Create order object and save it in a database
-        Order order = mapper.mapToOrder(customer, totalCost);
+        Order order = orderMapper.mapToOrder(customer, totalCost);
         orderRepository.save(order);
 
         productInfoToProductListMap.values().stream()
@@ -116,16 +116,16 @@ public class OrderServiceImpl implements OrderService {
                     productRepository.save(product);
                 });
 
-        return mapper.mapToOrderOutputDto(
+        return orderMapper.mapToOrderOutputDto(
                 customer,
-                mapper.mapToOrderProductOutputDtoList(productInfoToProductListMap),
+                orderMapper.mapToOrderProductOutputDtoList(productInfoToProductListMap),
                 totalCost);
     }
 
     @Override
     public Page<ProductOrderOutput> fetchOrdersSummary(Pageable pageable) {
         return productRepository.findProductOrderSummary(pageable)
-                .map(mapper::mapToProductOrderOutput);
+                .map(orderMapper::mapToProductOrderOutput);
     }
 
     private BigDecimal calculateTotalCost(Map<ProductInfo, List<Product>> productInfoToProductListMap) {

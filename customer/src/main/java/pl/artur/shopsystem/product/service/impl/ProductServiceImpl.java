@@ -8,11 +8,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import pl.artur.shopsystem.product.dto.ProductOutputDto;
-import pl.artur.shopsystem.product.dto.ProductTypeNumberOutputDto;
 import pl.artur.shopsystem.product.model.Product;
 import pl.artur.shopsystem.product.repository.ProductRepository;
 import pl.artur.shopsystem.product.service.ProductService;
-import product.model.Genre;
 import supplier.TimeSupplier;
 
 import java.util.List;
@@ -48,14 +46,6 @@ public class ProductServiceImpl implements ProductService {
         return productRepository.findByIdAndIsDeleted(productId, false)
                 .map(productMapper::mapToProductOutputDto)
                 .orElseThrow(() -> new NoSuchElementException(NO_PRODUCT_FOUND.getMessage()));
-    }
-
-    @Override
-    public ProductTypeNumberOutputDto getNumberOfProductsByGenre(Genre type) {
-        return ProductTypeNumberOutputDto.builder()
-                .type(type)
-                .productsNumber(productRepository.countByTypeAndIsDeleted(type, false))
-                .build();
     }
 
     @Override

@@ -9,6 +9,6 @@ import pl.artur.shopsystem.order.dto.ProductOrderOutput;
 public interface OrderService {
 
     OrderOutputDto makeOrder(OrderInputDto orderInputDto);
-
     Page<ProductOrderOutput> fetchOrdersSummary(Pageable pageable);
+
 }

@@ -1,6 +1,8 @@
-package pl.artur.shopsystem.order.model;
+package pl.artur.shopsystem.product.model;
 
-import lombok.*;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 import product.model.Genre;
 
 @Getter

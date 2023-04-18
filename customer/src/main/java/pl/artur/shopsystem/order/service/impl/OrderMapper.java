@@ -4,22 +4,19 @@ import exception.order.ProductErrorDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import pl.artur.shopsystem.customer.model.Customer;
-import pl.artur.shopsystem.order.dto.OrderInputDto;
 import pl.artur.shopsystem.order.dto.OrderOutputDto;
 import pl.artur.shopsystem.order.dto.ProductOrderOutput;
 import pl.artur.shopsystem.order.model.Order;
-import pl.artur.shopsystem.order.model.ProductOrderSummary;
 import pl.artur.shopsystem.order.orderProduct.dto.OrderProductInputDto;
 import pl.artur.shopsystem.order.orderProduct.dto.OrderProductOutputDto;
 import pl.artur.shopsystem.product.model.Product;
+import pl.artur.shopsystem.product.model.ProductOrderSummary;
 import pl.artur.shopsystem.product.repository.ProductRepository;
 import supplier.TimeSupplier;
 
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
-import java.util.function.Function;
 
 public class OrderMapper {
 
@@ -56,21 +53,20 @@ public class OrderMapper {
                 .toList();
     }
 
-    List<ProductInfo> mapToProductQuantities(
-            OrderInputDto orderInputDto,
-            Function<OrderProductInputDto, Optional<ProductInfo>> mapToOptionalOfProductQuantity) {
-        return orderInputDto.orderProducts()
-                .stream()
-                .map(mapToOptionalOfProductQuantity)
-                .flatMap(Optional::stream)
-                .toList();
-    }
-
     Order mapToOrder(Customer customer, BigDecimal totalCost) {
         return Order.builder()
                 .customer(customer)
                 .totalCost(totalCost)
                 .creationTime(timeSupplier.get())
+                .build();
+    }
+
+    public ProductOrderOutput mapToProductOrderOutput(ProductOrderSummary orderSummary) {
+        return ProductOrderOutput.builder()
+                .name(orderSummary.getName())
+                .type(orderSummary.getType())
+                .manufacturer(orderSummary.getManufacturer())
+                .number(orderSummary.getNumber())
                 .build();
     }
 
@@ -110,14 +106,5 @@ public class OrderMapper {
         }
 
         return Map.entry(productInfo, products);
-    }
-
-    public ProductOrderOutput mapToProductOrderOutput(ProductOrderSummary orderSummary) {
-        return ProductOrderOutput.builder()
-                .name(orderSummary.getName())
-                .type(orderSummary.getType())
-                .manufacturer(orderSummary.getManufacturer())
-                .number(orderSummary.getNumber())
-                .build();
     }
 }

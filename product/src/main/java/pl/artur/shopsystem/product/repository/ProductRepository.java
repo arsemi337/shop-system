@@ -5,6 +5,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import pl.artur.shopsystem.product.model.Product;
+import product.model.Genre;
 
 import java.util.List;
 import java.util.Optional;
@@ -20,4 +21,5 @@ public interface ProductRepository extends JpaRepository<Product, UUID> {
     List<Product> findAllByNameAndIsDeleted(String name, boolean isDeleted);
     Page<Product> findAllByNameAndIsDeleted(String name, boolean isDeleted, Pageable pageable);
     long countByNameAndIsDeleted(String name, boolean isDeleted);
+    long countByTypeAndIsDeleted(Genre type, boolean isDeleted);
 }

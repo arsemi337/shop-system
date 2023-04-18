@@ -81,6 +81,14 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public ProductTypeNumberOutputDto getNumberOfProductsByGenre(Genre type) {
+        return ProductTypeNumberOutputDto.builder()
+                .type(type)
+                .productsNumber(productRepository.countByTypeAndIsDeleted(type, false))
+                .build();
+    }
+
+    @Override
     @Transactional
     public MassProductOutputDto updateAllSameProducts(AlterProductInputDto alterProductInputDto) {
         validator.validateAlterProductInputDto(alterProductInputDto);
