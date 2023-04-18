@@ -17,9 +17,6 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
-import static exception.ProductExceptionMessages.MASS_MAPPING_ERROR;
-import static java.util.stream.Collectors.groupingBy;
-
 class ProductMapper {
 
     private final TimeSupplier timeSupplier;
@@ -52,33 +49,25 @@ class ProductMapper {
                 .build();
     }
 
-    // This method needs to receive a list of equal products as a parameter
-    MassProductOutputDto mapToMassProductOutputDto(List<Product> products) {
-        Map<String, List<Product>> productsPerName = products.stream()
-                .collect(groupingBy(Product::getName));
-        if (productsPerName.size() != 1) {
-            throw new IllegalArgumentException(MASS_MAPPING_ERROR.getMessage());
-        }
-
-        Product product = products.get(0);
-
+    MassProductOutputDto mapToMassProductOutputDto(Map.Entry<Product, Integer> productToProductCountEntry) {
         return MassProductOutputDto.builder()
-                .name(product.getName())
-                .type(product.getType())
-                .manufacturer(product.getManufacturer())
-                .price(product.getPrice())
-                .number(products.size())
+                .name(productToProductCountEntry.getKey().getName())
+                .type(productToProductCountEntry.getKey().getType())
+                .manufacturer(productToProductCountEntry.getKey().getManufacturer())
+                .price(productToProductCountEntry.getKey().getPrice())
+                .number(productToProductCountEntry.getValue())
                 .build();
     }
 
     Map.Entry<String, List<Product>> mapToStringToProductListMap(
             OrderProductInputDto orderProductInputDto,
             List<ProductErrorDto> errorDtoList) {
-        int quantity = parser.parsePurchaseQuantity(orderProductInputDto.quantity());
+        int quantity = parser.parseProductsNumber(orderProductInputDto.quantity());
         String productName = orderProductInputDto.productName();
 
-        Page<Product> productPage = productRepository.findAllByName(
+        Page<Product> productPage = productRepository.findAllByNameAndIsDeleted(
                 productName,
+                false,
                 PageRequest.of(0, quantity));
 
         List<Product> products = productPage.get().toList();

@@ -10,7 +10,7 @@ import static exception.ProductExceptionMessages.NUMBER_NOT_A_NUMBER;
 public class ProductParserImpl implements ProductParser {
 
     @Override
-    public int parseNumber(String stringNumber) {
+    public int parseAddProductsNumber(String stringNumber) {
         int number;
         try {
             number = Integer.parseInt(stringNumber);
@@ -24,16 +24,16 @@ public class ProductParserImpl implements ProductParser {
     }
 
     @Override
-    public int parsePurchaseQuantity(String stringQuantity) {
-        int quantity;
+    public int parseProductsNumber(String stringNumber) {
+        int number;
         try {
-            quantity = Integer.parseInt(stringQuantity);
-            if (quantity <= 0) {
-                throw new IllegalArgumentException(NUMBER_IS_NOT_POSITIVE.getMessage() + quantity);
+            number = Integer.parseInt(stringNumber);
+            if (number <= 0) {
+                throw new IllegalArgumentException(NUMBER_IS_NOT_POSITIVE.getMessage() + number);
             }
         } catch (NumberFormatException e) {
-            throw new IllegalArgumentException(NUMBER_NOT_A_NUMBER.getMessage() + stringQuantity);
+            throw new IllegalArgumentException(NUMBER_NOT_A_NUMBER.getMessage() + stringNumber);
         }
-        return quantity;
+        return number;
     }
 }

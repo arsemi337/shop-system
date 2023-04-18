@@ -9,6 +9,7 @@ import pl.artur.shopsystem.order.model.ProductOrderSummary;
 import pl.artur.shopsystem.product.model.Product;
 import product.model.Genre;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -16,6 +17,7 @@ import java.util.UUID;
 public interface ProductRepository extends JpaRepository<Product, UUID> {
 
     long countByTypeAndIsDeleted(Genre type, boolean isDeleted);
+    List<Product> findAllByNameAndIsDeleted(String name, boolean isDeleted);
     Page<Product> findAllByNameAndIsDeleted(String name, boolean isDeleted, Pageable pageable);
     Optional<Product> findByIdAndIsDeleted(UUID id, boolean isDeleted);
     @Query("""

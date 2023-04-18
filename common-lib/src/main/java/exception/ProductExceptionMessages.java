@@ -15,6 +15,6 @@ public enum ProductExceptionMessages {
     NUMBER_IS_NOT_POSITIVE("Entered products number is a non positive value: "),
     TOO_MUCH_PRODUCTS_TO_BE_ADDED("The total number of products to be added is to large: "),
     PRODUCT_IS_NOT_CONSISTENT("Entered product is not consistent with the already existing product "),
-    MASS_MAPPING_ERROR("Mass mapping method did not receive a list of equal products");
+    NOT_ENOUGH_PRODUCTS_TO_REMOVE("Entered products number to be removed is greater than total number of products in a database");
     private final String message;
 }

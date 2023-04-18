@@ -33,7 +33,7 @@ public class ProductValidatorImpl implements ProductValidator {
     @Override
     public void validateNumberOfProductsToBeAdded(List<AddProductInputDto> addProductInputDtoList) {
         int totalNumber = addProductInputDtoList.stream()
-                .map(productInputDto -> parser.parseNumber(productInputDto.number()))
+                .map(productInputDto -> parser.parseAddProductsNumber(productInputDto.number()))
                 .mapToInt(Integer::intValue)
                 .sum();
         if (totalNumber > 10_000) {
@@ -91,7 +91,7 @@ public class ProductValidatorImpl implements ProductValidator {
     }
 
     private void validateProductExistence(String name) {
-        if (!productRepository.existsByName(name)) {
+        if (!productRepository.existsByNameAndIsDeleted(name, false)) {
             throw new NoSuchElementException(NO_PRODUCT_FOUND_BY_NAME.getMessage() + name);
         }
     }
@@ -114,7 +114,7 @@ public class ProductValidatorImpl implements ProductValidator {
     }
 
     private void validateAddProductConsistency(AddProductInputDto addProductInputDto) {
-        productRepository.findFirstByName(addProductInputDto.name())
+        productRepository.findFirstByNameAndIsDeleted(addProductInputDto.name(), false)
                 .ifPresent(product -> {
                     if (!areProductAndProductInputEqual(addProductInputDto, product)) {
                         throwConsistencyException(addProductInputDto.name(), product);

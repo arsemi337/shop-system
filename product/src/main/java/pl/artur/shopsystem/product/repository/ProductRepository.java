@@ -13,8 +13,11 @@ import java.util.UUID;
 @Repository
 public interface ProductRepository extends JpaRepository<Product, UUID> {
 
-    boolean existsByName(String name);
-    Optional<Product> findFirstByName(String name);
-    List<Product> findAllByName(String name);
-    Page<Product> findAllByName(String name, Pageable pageable);
+    Page<Product> findAllByIsDeleted(Pageable pageable, boolean isDeleted);
+    Optional<Product> findByIdAndIsDeleted(UUID id, boolean isDeleted);
+    boolean existsByNameAndIsDeleted(String name, boolean isDeleted);
+    Optional<Product> findFirstByNameAndIsDeleted(String name, boolean isDeleted);
+    List<Product> findAllByNameAndIsDeleted(String name, boolean isDeleted);
+    Page<Product> findAllByNameAndIsDeleted(String name, boolean isDeleted, Pageable pageable);
+    long countByNameAndIsDeleted(String name, boolean isDeleted);
 }

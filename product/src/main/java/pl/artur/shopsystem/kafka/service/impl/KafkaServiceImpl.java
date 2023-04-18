@@ -13,6 +13,7 @@ import pl.artur.shopsystem.product.model.Product;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Map;
 import java.util.function.BiConsumer;
 
 @Service
@@ -30,9 +31,9 @@ public class KafkaServiceImpl implements KafkaService {
     }
 
     @Override
-    public void sendProductListToTopic(List<Product> products, String messageHeader) {
+    public void sendProductListToTopic(Map<Product, Integer> productToProductCountMap, String messageHeader) {
         String topicName = topicConfig.productsTopic().name();
-        List<ProductDto> productDtoList = products.stream()
+        List<ProductDto> productDtoList = productToProductCountMap.entrySet().stream()
                 .map(productMapper::mapToProductDto)
                 .toList();
 

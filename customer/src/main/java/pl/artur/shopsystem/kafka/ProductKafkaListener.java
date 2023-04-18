@@ -58,7 +58,7 @@ public class ProductKafkaListener {
 
     private void updateProduct(List<ProductDto> productDtoList) {
         productDtoList.forEach(productDto -> {
-            if (isProductDtoValid(productDto)) {
+            if (!isProductDtoValid(productDto)) {
                 logger.warn("Invalid product couldn't be updated in the database: " + productDto);
             } else {
                 productService.updateProduct(productDto);
@@ -69,7 +69,7 @@ public class ProductKafkaListener {
 
     private void removeProduct(List<ProductDto> productDtoList) {
         productDtoList.forEach(productDto -> {
-            if (isProductDtoValid(productDto)) {
+            if (!isProductDtoValid(productDto)) {
                 logger.warn("Invalid product couldn't be removed from the database: " + productDto);
             } else {
                 productService.removeProduct(productDto);

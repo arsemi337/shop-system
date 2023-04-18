@@ -3,14 +3,17 @@ package pl.artur.shopsystem.kafka.service.impl;
 import kafka.dto.ProductDto;
 import pl.artur.shopsystem.product.model.Product;
 
+import java.util.Map;
+
 public class KafkaProductMapper {
 
-    public ProductDto mapToProductDto(Product product) {
+    public ProductDto mapToProductDto(Map.Entry<Product, Integer> productToProductCountEntry) {
         return ProductDto.builder()
-                .name(product.getName())
-                .type(product.getType())
-                .manufacturer(product.getManufacturer())
-                .price(product.getPrice())
+                .name(productToProductCountEntry.getKey().getName())
+                .type(productToProductCountEntry.getKey().getType())
+                .manufacturer(productToProductCountEntry.getKey().getManufacturer())
+                .price(productToProductCountEntry.getKey().getPrice())
+                .count(productToProductCountEntry.getValue())
                 .build();
     }
 }

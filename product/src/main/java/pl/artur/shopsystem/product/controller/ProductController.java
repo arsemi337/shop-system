@@ -39,17 +39,14 @@ public class ProductController {
 
     @PutMapping
     ResponseEntity<MassProductOutputDto> updateProduct(@RequestBody AlterProductInputDto alterProductInputDto) {
-        return ResponseEntity.ok(productService.updateProduct(alterProductInputDto));
+        return ResponseEntity.ok(productService.updateAllSameProducts(alterProductInputDto));
     }
 
     @DeleteMapping
-    void removeProductsList(@RequestBody RemoveProductInputDto removeProductInputDto) {
-        productService.removeProductsList(removeProductInputDto);
-    }
-
-    @DeleteMapping("/{productId}")
-    void removeProduct(@PathVariable String productId) {
-        productService.removeProduct(productId);
+    void removeProductsByName(
+            @RequestParam String productName,
+            @RequestParam String productsNumber) {
+        productService.removeProductsByName(productName, productsNumber);
     }
 
     @PostMapping("/orders")

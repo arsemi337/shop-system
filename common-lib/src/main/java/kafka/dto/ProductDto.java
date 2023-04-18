@@ -11,7 +11,8 @@ public record ProductDto(
         String name,
         Genre type,
         String manufacturer,
-        BigDecimal price
+        BigDecimal price,
+        int count
 ) {
 
     @Override
