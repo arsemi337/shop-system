@@ -21,6 +21,8 @@ import product.model.Genre;
 import supplier.TimeSupplier;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.IntStream;
 
@@ -73,18 +75,27 @@ public class ProductServiceImpl implements ProductService {
             String operation,
             String value,
             Pageable pageable) {
+
         if (field == null && operation == null && value == null) {
             return productRepository.findAllByIsDeleted(pageable, false)
                     .map(productMapper::mapToProductOutputDto);
         } else if (field != null && operation != null && value != null) {
+            LocalDateTime dateTime = validateFilteringParameters(field, operation, value);
+
             SearchCriteria criteria = SearchCriteria.builder()
                     .key(field)
                     .operation(operation)
                     .value(value)
                     .build();
+
+            if (dateTime != null) {
+                criteria.setValue(dateTime);
+            }
+
             ProductSpecification spec = ProductSpecification.builder()
                     .criteria(criteria)
                     .build();
+
             return productRepository.findAll(spec, pageable)
                     .map(productMapper::mapToProductOutputDto);
         } else {
@@ -189,5 +200,34 @@ public class ProductServiceImpl implements ProductService {
                 });
         Product product = productMapper.mapToProduct(addProductInputDto);
         return Map.entry(product, number);
+    }
+
+    private LocalDateTime validateFilteringParameters(String field, String operation, String value) {
+        LocalDateTime dateTime = null;
+        switch (field) {
+            case "name", "type", "manufacturer" -> {
+                if (!operation.equals("=")) {
+                    throw new IllegalArgumentException(ILLEGAL_STRING_FILTERING_OPERATION.getMessage() + "name, type, manufacturer");
+                }
+            }
+            case "price" -> {
+                if (!operation.equals("=") &&
+                        !operation.equals(">") &&
+                        !operation.equals("<")) {
+                    throw new IllegalArgumentException(ILLEGAL_PRICE_FILTERING_OPERATION.getMessage() + "price");
+                }
+                parser.validateBigDecimal(value);
+            }
+            case "creationTime" -> {
+                if (!operation.equals(">") &&
+                        !operation.equals("<")) {
+                    throw new IllegalArgumentException(ILLEGAL_TIME_FILTERING_OPERATION.getMessage() + "time");
+                }
+                LocalDate date = parser.parseLocalDate(value);
+                dateTime = date.atStartOfDay();
+            }
+            default -> throw new IllegalArgumentException(ILLEGAL_FILTERING_PARAMETER.getMessage() + field);
+        }
+        return dateTime;
     }
 }

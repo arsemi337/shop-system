@@ -16,6 +16,11 @@ public enum ProductExceptionMessages {
     TOO_MUCH_PRODUCTS_TO_BE_ADDED("The total number of products to be added is to large: "),
     PRODUCT_IS_NOT_CONSISTENT("Entered product is not consistent with the already existing product "),
     NOT_ENOUGH_PRODUCTS_TO_REMOVE("Entered products number to be removed is greater than total number of products in a database"),
-    FILTERING_PARAMETERS_NOT_COMPLETE("Not all filtering parameters were passed");
+    ILLEGAL_FILTERING_PARAMETER("Entered filtering attribute is not allowed: "),
+    FILTERING_PARAMETERS_NOT_COMPLETE("Not all filtering parameters were passed"),
+    ILLEGAL_STRING_FILTERING_OPERATION("'=' is the only valid operation in terms of the following attributes: "),
+    ILLEGAL_PRICE_FILTERING_OPERATION("'=', '<', '>' are the only valid operations in terms of the following attributes: "),
+    ILLEGAL_TIME_FILTERING_OPERATION("'<', '>' are the only valid operations in terms of the following attributes: "),
+    INVALID_DATE("Entered date does not match proper format (YYYY-MM-DD): ");
     private final String message;
 }
