@@ -14,6 +14,7 @@ import pl.artur.shopsystem.product.dto.*;
 import pl.artur.shopsystem.product.model.Product;
 import pl.artur.shopsystem.product.repository.ProductRepository;
 import pl.artur.shopsystem.product.repository.ProductSpecification;
+import pl.artur.shopsystem.product.service.ProductMapper;
 import pl.artur.shopsystem.product.service.ProductParser;
 import pl.artur.shopsystem.product.service.ProductService;
 import pl.artur.shopsystem.product.service.ProductValidator;
@@ -37,19 +38,19 @@ public class ProductServiceImpl implements ProductService {
     private final ProductValidator validator;
     private final ProductParser parser;
     private final ProductRepository productRepository;
-    private final ProductMapper productMapper;
     private final KafkaService kafkaService;
+    private final ProductMapper productMapper = ProductMapper.INSTANCE;
+    private final TimeSupplier timeSupplier;
 
     ProductServiceImpl(ProductValidator validator,
                        ProductParser parser,
-                       TimeSupplier timeSupplier,
                        ProductRepository productRepository,
-                       KafkaService kafkaService) {
+                       KafkaService kafkaService, TimeSupplier timeSupplier) {
         this.validator = validator;
         this.parser = parser;
         this.productRepository = productRepository;
-        this.productMapper = new ProductMapper(timeSupplier, productRepository, parser);
         this.kafkaService = kafkaService;
+        this.timeSupplier = timeSupplier;
     }
 
     @Override
@@ -165,6 +166,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    @Transactional
     public List<OrderProductOutputDto> purchaseProducts(List<OrderProductInputDto> orderProductInputDtoList) {
         orderProductInputDtoList
                 .forEach(validator::validatePurchaseProductInputDto);
@@ -172,7 +174,7 @@ public class ProductServiceImpl implements ProductService {
         List<ProductErrorDto> productErrorDtoList = new ArrayList<>();
 
         Map<String, List<Product>> productNameToProductListMap = orderProductInputDtoList.stream()
-                .map(dto -> productMapper.mapToStringToProductListMap(dto, productErrorDtoList))
+                .map(dto -> mapToStringToProductListMap(dto, productErrorDtoList))
                 .collect(toMap(Map.Entry::getKey, Map.Entry::getValue));
 
         if (!productErrorDtoList.isEmpty()) {
@@ -196,9 +198,11 @@ public class ProductServiceImpl implements ProductService {
         IntStream.range(0, number)
                 .forEach(i -> {
                     Product product = productMapper.mapToProduct(addProductInputDto);
+                    product.setCreationTime(timeSupplier.get());
                     productRepository.save(product);
                 });
         Product product = productMapper.mapToProduct(addProductInputDto);
+        product.setCreationTime(timeSupplier.get());
         return Map.entry(product, number);
     }
 
@@ -229,5 +233,29 @@ public class ProductServiceImpl implements ProductService {
             default -> throw new IllegalArgumentException(ILLEGAL_FILTERING_PARAMETER.getMessage() + field);
         }
         return dateTime;
+    }
+
+    Map.Entry<String, List<Product>> mapToStringToProductListMap(
+            OrderProductInputDto orderProductInputDto,
+            List<ProductErrorDto> errorDtoList) {
+        int quantity = parser.parseProductsNumber(orderProductInputDto.quantity());
+        String productName = orderProductInputDto.productName();
+
+        Page<Product> productPage = productRepository.findAllByNameAndIsDeleted(
+                productName,
+                false,
+                PageRequest.of(0, quantity));
+
+        List<Product> products = productPage.get().toList();
+
+        if (products.size() < quantity) {
+            errorDtoList.add(
+                    ProductErrorDto.builder()
+                            .productName(productName)
+                            .remaining(products.size())
+                            .build());
+        }
+
+        return Map.entry(orderProductInputDto.productName(), products);
     }
 }

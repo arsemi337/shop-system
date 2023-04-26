@@ -1,8 +1,10 @@
 package pl.artur.shopsystem.product.repository;
 
+import jakarta.persistence.LockModeType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import pl.artur.shopsystem.product.model.Product;
@@ -16,6 +18,7 @@ import java.util.UUID;
 public interface ProductRepository extends JpaRepository<Product, UUID> {
 
     List<Product> findAllByNameAndIsDeleted(String name, boolean isDeleted);
+    @Lock(LockModeType.OPTIMISTIC_FORCE_INCREMENT)
     Page<Product> findAllByNameAndIsDeleted(String name, boolean isDeleted, Pageable pageable);
     Optional<Product> findByIdAndIsDeleted(UUID id, boolean isDeleted);
     @Query("""
